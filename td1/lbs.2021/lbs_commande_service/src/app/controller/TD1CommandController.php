@@ -6,7 +6,7 @@ use \Psr\Http\Message\ServerRequestInterface as Request ;
 use \Psr\Http\Message\ResponseInterface as Response ;
 use Psr\Container\ContainerInterface;
 
-class TDCommandController {
+class TD1CommandController {
 
     // constructor receives container instance
 //    public function __construct(ContainerInterface $container) {

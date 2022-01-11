@@ -8,7 +8,7 @@ require_once  __DIR__ . '/../src/vendor/autoload.php';
 
 use \Psr\Http\Message\ServerRequestInterface as Request ;
 use \Psr\Http\Message\ResponseInterface as Response ;
-use \lbs\command\app\controller\TDCommandController as TDCommandController;
+use \lbs\command\app\controller\TD1CommandController as TD1CommandController;
 
 $configuration = [
     'settings' => [
@@ -23,6 +23,6 @@ $app = new \Slim\App($c);
 // $container = $app->getContainer() ;
 // $prod = $container['settings']['displayErrorDetails'] ;
 
-$app->get('/TD1/commands[/]', TDCommandController::class . ':listCommands');
+$app->get('/TD1/commands[/]', TD1CommandController::class . ':listCommands');
 
 $app->run();
