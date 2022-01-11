@@ -1,0 +1,28 @@
+<?php
+/**
+ * File:  index.php
+ *
+ */
+
+require_once  __DIR__ . '/../src/vendor/autoload.php';
+
+use \Psr\Http\Message\ServerRequestInterface as Request ;
+use \Psr\Http\Message\ResponseInterface as Response ;
+use \lbs\command\app\controller\TDCommandController as TDCommandController;
+
+$configuration = [
+    'settings' => [
+        'displayErrorDetails' => true,
+    ]
+];
+$c = new \Slim\Container($configuration);
+$app = new \Slim\App($c);
+
+// récupérer le conteneur :
+
+// $container = $app->getContainer() ;
+// $prod = $container['settings']['displayErrorDetails'] ;
+
+$app->get('/TD1/commands[/]', TDCommandController::class . ':listCommands');
+
+$app->run();
