@@ -9,9 +9,9 @@ use Psr\Container\ContainerInterface;
 class TD1CommandController {
 
     // constructor receives container instance
-//    public function __construct(ContainerInterface $container) {
-//     $this->container = $container;
-//     }
+    // public function __construct(ContainerInterface $container) {
+    //     $this->container = $container;
+    // }
 
 
     public $commands = [
@@ -29,7 +29,25 @@ class TD1CommandController {
             "commandes"=> $this->commands
         ];
         
-        $resp->getBody()->write( json_encode( $data ) ) ;
+        $resp->getBody()->write( json_encode($data) ) ;
+        return $resp ;
+    }
+
+    public function oneCommand(Request $req, Response $resp, array $args) : Response {
+        $id = $args['id'];
+
+        foreach ($this->commands as $a){
+            if ($a['id'] == $id) {
+                $command = $a;
+            }
+        }
+        
+        $data = [
+            "type" => "resource",
+            "commande"=> $command
+        ];
+
+        $resp->getBody()->write(json_encode($data)) ;
         return $resp ;
     }
 }

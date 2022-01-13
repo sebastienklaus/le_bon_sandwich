@@ -24,5 +24,6 @@ $app = new \Slim\App($c);
 // $prod = $container['settings']['displayErrorDetails'] ;
 
 $app->get('/TD1/commands[/]', TD1CommandController::class . ':listCommands');
+$app->get('/TD1/commands/{id}[/]', TD1CommandController::class . ':oneCommand');
 
 $app->run();
