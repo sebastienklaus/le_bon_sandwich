@@ -6,6 +6,9 @@ use \Psr\Http\Message\ServerRequestInterface as Request ;
 use \Psr\Http\Message\ResponseInterface as Response ;
 use Psr\Container\ContainerInterface;
 
+use \lbs\command\app\model\Commande as Commande;
+
+
 class TD1CommandController {
 
     // constructor receives container instance
@@ -23,31 +26,43 @@ class TD1CommandController {
 
     public function listCommands(Request $req, Response $resp, array $args) : Response {
         
+        $commandes = Commande::select(['id', 'nom', 'mail', 'montant', 'livraison'])
+                                ->get();
+
+        $resp = $resp->withStatus(200)
+                ->withHeader('Content-Type', 'application/json; charset=utf-8');
+
         $data = [
             "type" => "collection",
-            "count" => count($this->commands),
-            "commandes"=> $this->commands
+            "count" => count($commandes),
+            "commandes"=> $commandes
         ];
-        
+
         $resp->getBody()->write( json_encode($data) ) ;
+
         return $resp ;
+        
     }
 
-    public function oneCommand(Request $req, Response $resp, array $args) : Response {
+
+    public function oneCommand(Request $req, Response $resp, array $args) : Response{
         $id = $args['id'];
 
-        foreach ($this->commands as $a){
-            if ($a['id'] == $id) {
-                $command = $a;
-            }
-        }
-        
+        $commande = Commande::select(['id', 'nom', 'mail', 'montant', 'livraison'])
+                                ->where('id', '=', $id)
+                                ->firstOrFail();
+
+        $resp = $resp->withStatus(200)
+                ->withHeader('Content-Type', 'application/json; charset=utf-8');
+
         $data = [
             "type" => "resource",
-            "commande"=> $command
+            "commande"=> $commande
         ];
 
-        $resp->getBody()->write(json_encode($data)) ;
+        $resp->getBody()->write( json_encode($data) ) ;
+
         return $resp ;
+
     }
 }
