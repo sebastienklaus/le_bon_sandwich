@@ -12,7 +12,7 @@ class ErrorHandler extends \Exception{
     static public function notFound(){
             return function( $req, $resp ) {
                 $error = 400;
-                $msg = "URI non traitée";
+                $msg = "Bad Request - URI non traitée";
     
                 $data = [
                     "type" => "error",
@@ -48,6 +48,33 @@ class ErrorHandler extends \Exception{
             return $resp ;
         };
     }
+
+    static public function notAllowedHandler(){
+        return function( $req, $resp, $methods ) {
+            $error = 405;
+
+            $resp= $resp ->withStatus( $error )
+                         ->withHeader('Content-Type', 'application/json; charset=utf-8')
+                         ->withHeader('Allow', implode(',', $methods) );
+            $resp->getBody()->write( 'Méthode   permises :' . implode(',', $methods) ) ;
+            return $resp ;
+        };
+    }
+
+
+    static public function phpErrorHandler(){
+        return function( $req, $resp, $e ) {
+            $error = 500;
+            
+            $resp= $resp->withStatus( $error ) ;
+            $resp->getBody()
+                    ->write( 'error :' . $e->getMessage() ) 
+                    ->write( 'file : ' . $e->getFile() )
+                    ->write( 'line : ' . $e->getLine() ) ;
+            return $resp ;
+        };
+    }
+
 
 
 

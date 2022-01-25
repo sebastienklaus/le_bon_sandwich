@@ -11,8 +11,8 @@ use \lbs\command\app\model\Commande as Commande;
 
 
 $settings = require_once __DIR__. '/../src/app/conf/settings.php';
-// $dependencies= require_once __DIR__. '/../src/app/conf/dependencies.php';
 $errors = require_once __DIR__. '/../src/app/conf/errors.php';
+// $dependencies= require_once __DIR__. '/../src/app/conf/dependencies.php';
 
 $app_config = array_merge($settings, $errors);
 

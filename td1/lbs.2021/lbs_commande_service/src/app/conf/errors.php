@@ -3,13 +3,24 @@
 use lbs\command\app\error\ErrorHandler as ErrorHandler;
 
 return [
-    //erreur 400
-    'notFoundHandler' => function( $c ) {
-            return ErrorHandler::notFound();
+    
+    // //erreur 404
+    // 'notFoundHandler' => function( $c ) {
+    //     return ErrorHandler::notFound();
+    // },
+    
+    //error 405
+    'notAllowedHandler' => function( $c ) {
+        return ErrorHandler::notAllowedHandler();
     },
 
-    //error 404
+    //error 500
     'errorHandler' => function( $c ) {
+        return ErrorHandler::errorHandler();
+    },
+
+    //error 500
+    'phpErrorHandler' => function( $c ) {
         return ErrorHandler::errorHandler();
     },
 
