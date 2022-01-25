@@ -4,10 +4,10 @@ use lbs\command\app\error\ErrorHandler as ErrorHandler;
 
 return [
     
-    // //erreur 404
-    // 'notFoundHandler' => function( $c ) {
-    //     return ErrorHandler::notFound();
-    // },
+    //erreur 404
+    'notFoundHandler' => function( $c ) {
+        return ErrorHandler::notFound();
+    },
     
     //error 405
     'notAllowedHandler' => function( $c ) {
