@@ -21,33 +21,21 @@ class TD1CommandController {
 
 
     public function listCommands(Request $req, Response $resp, array $args) : Response {
-        try {
-            $commandes = Commande::select(['id', 'nom', 'mail', 'montant', 'livraison'])
-                                    ->get();
+        $commandes = Commande::select(['id', 'nom', 'mail', 'montant', 'livraison'])
+            ->get();
 
-            $resp = $resp->withStatus(200)
-                        ->withHeader('Content-Type', 'application/json; charset=utf-8');
+        $resp = $resp->withStatus(200)
+            ->withHeader('Content-Type', 'application/json; charset=utf-8');
 
-            $data = [
-                "type" => "collection",
-                "count" => count($commandes),
-                "commandes"=> $commandes
-            ];
+        $data = [
+            "type" => "collection",
+            "count" => count($commandes),
+            "commandes" => $commandes
+        ];
 
-            $resp->getBody()->write( json_encode($data) ) ;
+        $resp->getBody()->write(json_encode($data));
 
-            return $resp ;
-        } catch (ModelNotFoundException $e) {
-            //remplacer par un retour de message en JSON etc
-            $data = [
-                'type' => 'error',
-                'error' => 404,
-                'message' => "Ressource not found : command ID = " . $args['id']
-            ];
-
-            $resp->getBody()->write( json_encode($data) ) ;
-            return $resp ;
-        }
+        return $resp;
         
     }
 
@@ -69,8 +57,16 @@ class TD1CommandController {
                         ->withHeader('Content-Type', 'application/json; charset=utf-8');
             $resp->getBody()->write( json_encode($data) ) ;
             return $resp ;
-        } catch (ModelNotFoundException $th) {
-            //throw $th;
+        } catch (ModelNotFoundException $e) {
+            //remplacer par un retour de message en JSON etc
+            $data = [
+                'type' => 'error',
+                'error' => 404,
+                'message' => "Ressource not found : command ID = " . $args['id']
+            ];
+
+            $resp->getBody()->write( json_encode($data) ) ;
+            return $resp ;
         }
 
             
