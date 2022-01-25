@@ -29,6 +29,8 @@ class TD3CommandController{
             //return error in json with 400 error code with msg 'missing data'
         }
 
+        //POUR RENSEIGNER LES DATA, SUR INSOMNIA CHANGER L'ONGLET BODY EN JSON
+
         /*
         - try & catch
 
