@@ -18,9 +18,32 @@ class TD3CommandController{
     }
 
 
-    public function updateCommand(Request $req, Response $resp, array $args): Response {
+    public function replaceCommand(Request $req, Response $resp, array $args): Response {
         //get id of the command
         $id = $args['id'];
+
+
+        $command_data = $req->getParsedBody();
+
+        if(!isset($command_data['nom_client'])){
+            //return error in json with 400 error code with msg 'missing data'
+        }
+
+        /*
+        - try & catch
+
+        -Command with findOrfail
+
+        -catch modelnotfoundexception : error 404
+        - catch exception error 500
+
+        */
+
+
+
+        
+
+
         
         
         //write in the body with data encode with a json_encode function
