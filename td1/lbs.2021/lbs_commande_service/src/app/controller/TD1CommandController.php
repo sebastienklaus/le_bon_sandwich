@@ -24,53 +24,78 @@ class TD1CommandController
 
     public function listCommands(Request $req, Response $resp, array $args): Response
     {
+        //get all the commands
         $commandes = Commande::select(['id', 'nom', 'mail', 'montant', 'livraison'])
             ->get();
 
-        $resp = $resp->withStatus(200)
-            ->withHeader('Content-Type', 'application/json; charset=utf-8');
-
+        //complete the data array with datas who are gonna be returned in JSON format
         $data = [
             "type" => "collection",
             "count" => count($commandes),
             "commandes" => $commandes
         ];
 
+        //configure the response headers
+        $resp = $resp->withStatus(200)
+            ->withHeader('Content-Type', 'application/json; charset=utf-8');
+
+
+        //write in the body with data encode with a json_encode function
         $resp->getBody()->write(json_encode($data));
 
+        //return the response (ALWAYS !)
         return $resp;
     }
 
 
     public function oneCommand(Request $req, Response $resp, array $args): Response
     {
+        //get the id in the URI with the args array
         $id = $args['id'];
 
+        //try & ctach in case the id doesn't exist
         try {
+            //get the command with some id
             $commande = Commande::select(['id', 'nom', 'mail', 'montant', 'livraison'])
                 ->where('id', '=', $id)
                 ->firstOrFail();
 
+                
+            //complete the data array with datas who are gonna be returned in JSON format
             $data = [
                 "type" => "resource",
                 "commande" => $commande
             ];
 
+            //configure the response headers
             $resp = $resp->withStatus(200)
                 ->withHeader('Content-Type', 'application/json; charset=utf-8');
+    
+            //write in the body with data encode with a json_encode function
             $resp->getBody()->write(json_encode($data));
+            
+            //return the response (ALWAYS !)
             return $resp;
-        } catch (ModelNotFoundException $e) {
-            //remplacer par un retour de message en JSON etc
+
+        }
+        //in case there is 0 ressource with this id ... 
+        catch (ModelNotFoundException $e) {
+            //complete the data array
             $data = [
                 'type' => 'error',
                 'error' => 404,
                 'message' => "Ressource not found : command ID = " . $id
             ];
-            
+
+            //configure the response headers
             $resp = $resp->withStatus(404)
                         ->withHeader('Content-Type', 'application/json; charset=utf-8');
+
+
+            //write in the body with data encode with a json_encode function
             $resp->getBody()->write(json_encode($data));
+            
+            //return the response (ALWAYS !)
             return $resp;
         }
     }
