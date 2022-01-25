@@ -11,7 +11,7 @@ class ErrorHandler extends \Exception{
 
     static public function notFound(){
             return function( $req, $resp ) {
-                $error = 404;
+                $error = 400;
                 $msg = "URI non traitée";
     
                 $data = [
@@ -32,7 +32,7 @@ class ErrorHandler extends \Exception{
     static public function errorHandler(){
         return function( $req, $resp ) {
             $uri = $req->getUri();
-            $error = 400;
+            $error = 404;
             $msg = "Bad Request | Ressource non disponible : $uri";
 
             $data = [
