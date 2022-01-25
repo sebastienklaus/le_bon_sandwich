@@ -49,6 +49,7 @@ class ErrorHandler extends \Exception{
         };
     }
 
+
     static public function notAllowedHandler(){
         return function( $req, $resp, $methods ) {
             $error = 405;
@@ -56,7 +57,7 @@ class ErrorHandler extends \Exception{
             $resp= $resp ->withStatus( $error )
                          ->withHeader('Content-Type', 'application/json; charset=utf-8')
                          ->withHeader('Allow', implode(',', $methods) );
-            $resp->getBody()->write( 'Méthode   permises :' . implode(',', $methods) ) ;
+            $resp->getBody()->write( json_encode('Méthode(s) permises : ' . implode(',', $methods) )) ;
             return $resp ;
         };
     }
