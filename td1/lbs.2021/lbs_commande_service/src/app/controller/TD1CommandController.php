@@ -4,15 +4,11 @@ namespace lbs\command\app\controller;
 
 use \Psr\Http\Message\ServerRequestInterface as Request;
 use \Psr\Http\Message\ResponseInterface as Response;
-
 use \lbs\command\app\model\Commande as Commande;
-use \lbs\command\app\error\ErrorHandler as ErrorHandler;
-
 use Illuminate\Database\Eloquent\ModelNotFoundException as ModelNotFoundException;
 
 
-class TD1CommandController
-{
+class TD1CommandController{
 
     private $c; // le conteneur de dépendences de l'application
 
@@ -22,8 +18,7 @@ class TD1CommandController
     }
 
 
-    public function listCommands(Request $req, Response $resp, array $args): Response
-    {
+    public function listCommands(Request $req, Response $resp, array $args): Response{
         //get all the commands
         $commandes = Commande::select(['id', 'nom', 'mail', 'montant', 'livraison'])
             ->get();
@@ -48,8 +43,7 @@ class TD1CommandController
     }
 
 
-    public function oneCommand(Request $req, Response $resp, array $args): Response
-    {
+    public function oneCommand(Request $req, Response $resp, array $args): Response {
         //get the id in the URI with the args array
         $id = $args['id'];
 
@@ -99,4 +93,5 @@ class TD1CommandController
             return $resp;
         }
     }
+
 }
