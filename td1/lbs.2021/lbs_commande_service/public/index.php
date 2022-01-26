@@ -30,7 +30,6 @@ $app->get('/TD1/commands/{id}[/]', TD1CommandController::class . ':oneCommand');
 
 
 //TD3
-$app->get('/TD3/commands[/]', TD3CommandController::class . ':form');
 $app->put('/TD3/commands/{id}[/]', TD3CommandController::class . ':replaceCommand');
 
 $app->run();
