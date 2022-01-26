@@ -74,7 +74,7 @@ class TD3CommandController{
         }
         
         catch (\Exception $th) {
-            return JsonError::jsonError($req, $resp, 'error', 500,'A exception is thrown : something is wrong with the update of datas' );
+            return JsonError::jsonError($req, $resp, 'error', 500,'A exception is thrown : something is wrong with the update of datas' ); 
         }
     }
 }
