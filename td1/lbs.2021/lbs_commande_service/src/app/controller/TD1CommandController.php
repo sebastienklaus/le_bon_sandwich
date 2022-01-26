@@ -5,6 +5,7 @@ namespace lbs\command\app\controller;
 use \Psr\Http\Message\ServerRequestInterface as Request;
 use \Psr\Http\Message\ResponseInterface as Response;
 use \lbs\command\app\model\Commande as Commande;
+use lbs\command\app\error\JsonError as JsonError;
 use Illuminate\Database\Eloquent\ModelNotFoundException as ModelNotFoundException;
 
 
@@ -74,23 +75,8 @@ class TD1CommandController{
         }
         //in case there is 0 ressource with this id ... 
         catch (ModelNotFoundException $e) {
-            //complete the data array
-            $data = [
-                'type' => 'error',
-                'error' => 404,
-                'message' => "Ressource not found : command ID = " . $id
-            ];
 
-            //configure the response headers
-            $resp = $resp->withStatus(404)
-                        ->withHeader('Content-Type', 'application/json; charset=utf-8');
-
-
-            //write in the body with data encode with a json_encode function
-            $resp->getBody()->write(json_encode($data));
-            
-            //return the response (ALWAYS !)
-            return $resp;
+            return JsonError::jsonError($req, $resp, 'error', 404,'Ressource not found : command ID = ' . $id );
         }
     }
 
