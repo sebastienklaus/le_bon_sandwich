@@ -11,6 +11,7 @@ use \lbs\command\app\model\Paiement as Paiement;
 
 use lbs\command\app\error\JsonError as JsonError;
 use Illuminate\Database\Eloquent\ModelNotFoundException as ModelNotFoundException;
+use \lbs\command\app\controller\TD4CommandController as TD4CommandController;
 
 
 class TD1CommandController{
@@ -51,25 +52,32 @@ class TD1CommandController{
     public function oneCommand(Request $req, Response $resp, array $args): Response {
         //get the id in the URI with the args array
         $id = $args['id'];
-
+        
         //try & ctach in case the id doesn't exist
         try {
+
+            //get the actual URI & params
+            $uri = $req->getUri();
+            $params = $req->getQueryParam('embed' , null);            
+
             //get the command with some id
             $commande = Commande::select(['id', 'nom', 'mail', 'montant', 'livraison'])
-                ->where('id', '=', $id)
-                ->firstOrFail();
+                ->where('id', '=', $id);
+            if($params === 'items'){
+                $commande = $commande->with('items');
+            }    
+            $commande = $commande->firstOrFail();
 
-            //get the actual URI
-            $uri = $req->getUri();
             //complete the data array with datas who are gonna be returned in JSON format
             $data = [
                 "type" => "resource",
                 "commande" => $commande,
-                "links" =>[
+                "links" => [
                     "items" => ["href" => $uri.'/items' ],
                     "self" => ["href" => "$uri" ]
                 ]
             ];
+            
 
             //configure the response headers
             $resp = $resp->withStatus(200)

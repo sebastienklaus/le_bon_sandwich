@@ -23,7 +23,7 @@ class TD4CommandController{
     }
 
 
-    public function getItemsOfCommand(Request $req, Response $resp, array $args): Response{
+    public static function getItemsOfCommand(Request $req, Response $resp, array $args): Response{
         $id = $args['id'];
         try {
             //get all the commands
@@ -34,7 +34,6 @@ class TD4CommandController{
 
         //complete the data array with datas who are gonna be returned in JSON format
         $data = [
-            "test" => $items[0]['id'],
             "type" => "collection",
             "count" => count($items),
             "items" => $items

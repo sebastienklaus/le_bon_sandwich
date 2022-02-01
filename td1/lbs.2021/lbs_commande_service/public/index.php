@@ -27,7 +27,7 @@ $capsule->setAsGlobal();
 
 $app->get('/commands/{id}/items[/]', TD4CommandController::class . ':getItemsOfCommand');
 
-$app->get('/commands/{id}[/]', TD1CommandController::class . ':oneCommand');
+$app->get('/commands/{id}[/]', TD1CommandController::class . ':oneCommand')->setName('commande');
 $app->put('/commands/{id}[/]', TD3CommandController::class . ':replaceCommand');
 
 $app->get('/commands[/]', TD1CommandController::class . ':listCommands');
