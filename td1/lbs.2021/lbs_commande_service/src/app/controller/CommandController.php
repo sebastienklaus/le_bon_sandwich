@@ -34,12 +34,13 @@ class CommandController{
         $data = [
             "type" => "collection",
             "count" => count($commandes),
-            "commandes" => $commandes
+            "commandes" => $commandes,
         ];
 
         //configure the response headers
         $resp = $resp->withStatus(200)
             ->withHeader('Content-Type', 'application/json; charset=utf-8');
+
 
         //write in the body with data encode with a json_encode function
         $resp->getBody()->write(json_encode($data));
@@ -195,3 +196,7 @@ class CommandController{
     }
 
 }
+
+//Command lines for container m2dhtml
+// $md2html = $this->c->md2html;
+// $md2html('# Hello');
