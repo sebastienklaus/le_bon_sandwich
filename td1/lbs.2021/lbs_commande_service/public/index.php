@@ -24,7 +24,7 @@ $capsule->addConnection($app_config['settings']['dbfile']);
 $capsule->bootEloquent();
 $capsule->setAsGlobal();
 
-// print_r(__DIR__. '/../src/app/conf/dependencies.php');
+
 $app->get('/commands/{id}/items[/]', CommandController::class . ':getItemsOfCommand')->setName('commandWithItems');
 
 $app->get('/commands/{id}[/]', CommandController::class . ':oneCommand')->setName('command');
