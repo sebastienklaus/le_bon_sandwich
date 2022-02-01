@@ -59,11 +59,16 @@ class TD1CommandController{
                 ->where('id', '=', $id)
                 ->firstOrFail();
 
-                
+            //get the actual URI
+            $uri = $req->getUri();
             //complete the data array with datas who are gonna be returned in JSON format
             $data = [
                 "type" => "resource",
-                "commande" => $commande
+                "commande" => $commande,
+                "links" =>[
+                    "items" => ["href" => $uri.'/items' ],
+                    "self" => ["href" => "$uri" ]
+                ]
             ];
 
             //configure the response headers
