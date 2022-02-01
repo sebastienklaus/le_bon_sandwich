@@ -12,5 +12,15 @@ return[
         $log->pushHandler( new \Monolog\Handler\StreamHandler($c->settings['warning.log'],$c->settings['warning.level']) ) ;
         return $log ;
     },
+    'md2html' => function(\Slim\Container $c) {
+        return function(string $md) {
+            $parser = new Parsedown();
+            return $parser->text($md); 
+
+        // return \Michelf\Markdown::defaultTransform($md);
+        // doesn't work ...
+
+        };
+    },
 
 ];
