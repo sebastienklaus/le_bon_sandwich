@@ -43,6 +43,7 @@ class CommandController{
 
         //write in the body with data encode with a json_encode function
         $resp->getBody()->write(json_encode($data));
+        
 
         //return the response (ALWAYS !)
         return $resp;
@@ -83,9 +84,10 @@ class CommandController{
             //configure the response headers
             $resp = $resp->withStatus(200)
                 ->withHeader('Content-Type', 'application/json; charset=utf-8');
-    
+            
             //write in the body with data encode with a json_encode function
             $resp->getBody()->write(json_encode($data));
+                
             
             //return the response (ALWAYS !)
             return $resp;
@@ -93,10 +95,10 @@ class CommandController{
         }
         //in case there is 0 ressource with this id ... 
         catch (ModelNotFoundException $e) {
-            return JsonError::jsonError($req, $resp, 'error', 404,'Ressource not found : command ID = ' . $id );
-            $this->c->logger->debug('GET / : debug (c\'est pas très grave, pas de gros soucis pour l\'instant');
-            $this->c->logger->warning('GET / : warning (au secours, tout va mal chef !');
-    
+            $this->c->logger_debug->debug('GET / : debug (c\'est pas très grave, pas de gros soucis pour l\'instant');
+            $this->c->logger_warning->warning('GET / : warning (au secours, tout va mal chef !');
+            return JsonError::jsonError($req, $resp, 'error', 404,'Ressource not found : command ID = ' . $id );   
+
         }
     }
 
