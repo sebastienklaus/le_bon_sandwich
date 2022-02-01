@@ -79,33 +79,8 @@ class TD1CommandController{
         }
         //in case there is 0 ressource with this id ... 
         catch (ModelNotFoundException $e) {
-
             return JsonError::jsonError($req, $resp, 'error', 404,'Ressource not found : command ID = ' . $id );
         }
-    }
-
-    public function testItem(Request $req, Response $resp, array $args): Response{
-        //get all the commands
-        $items = Paiement::select()
-                    ->get();
-
-        //complete the data array with datas who are gonna be returned in JSON format
-        $data = [
-            "type" => "collection",
-            "count" => count($items),
-            "commandes" => $items
-        ];
-
-        //configure the response headers
-        $resp = $resp->withStatus(200)
-            ->withHeader('Content-Type', 'application/json; charset=utf-8');
-
-
-        //write in the body with data encode with a json_encode function
-        $resp->getBody()->write(json_encode($data));
-
-        //return the response (ALWAYS !)
-        return $resp;
     }
 
 }
