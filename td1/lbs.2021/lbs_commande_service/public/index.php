@@ -29,6 +29,7 @@ $app->get('/commands/{id}[/]', TD1CommandController::class . ':oneCommand');
 $app->put('/commands/{id}[/]', TD3CommandController::class . ':replaceCommand');
 
 $app->get('/commands[/]', TD1CommandController::class . ':listCommands');
+$app->get('/testing[/]', TD1CommandController::class . ':testItem');
 
 
 $app->run();
