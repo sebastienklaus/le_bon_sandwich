@@ -4,9 +4,7 @@ require_once  __DIR__ . '/../src/vendor/autoload.php';
 
 use \Psr\Http\Message\ServerRequestInterface as Request ;
 use \Psr\Http\Message\ResponseInterface as Response ;
-use \lbs\command\app\controller\TD1CommandController as TD1CommandController;
-use \lbs\command\app\controller\TD3CommandController as TD3CommandController;
-use \lbs\command\app\controller\TD4CommandController as TD4CommandController;
+use \lbs\command\app\controller\CommandController as CommandController;
 
 
 use \lbs\command\app\model\Commande as Commande;
@@ -25,12 +23,12 @@ $capsule->addConnection($app_config['settings']['dbfile']);
 $capsule->bootEloquent();
 $capsule->setAsGlobal();
 
-$app->get('/commands/{id}/items[/]', TD4CommandController::class . ':getItemsOfCommand');
+$app->get('/commands/{id}/items[/]', CommandController::class . ':getItemsOfCommand')->setName('commandWithItems');
 
-$app->get('/commands/{id}[/]', TD1CommandController::class . ':oneCommand')->setName('commande');
-$app->put('/commands/{id}[/]', TD3CommandController::class . ':replaceCommand');
+$app->get('/commands/{id}[/]', CommandController::class . ':oneCommand')->setName('command');
+$app->put('/commands/{id}[/]', CommandController::class . ':replaceCommand')->setName('replaceCommand');
 
-$app->get('/commands[/]', TD1CommandController::class . ':listCommands');
+$app->get('/commands[/]', CommandController::class . ':listCommands')->setName('commands');
 
 
 $app->run();
