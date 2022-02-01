@@ -4,7 +4,11 @@ namespace lbs\command\app\controller;
 
 use \Psr\Http\Message\ServerRequestInterface as Request;
 use \Psr\Http\Message\ResponseInterface as Response;
+
 use \lbs\command\app\model\Commande as Commande;
+use \lbs\command\app\model\Item as Item;
+use \lbs\command\app\model\Paiement as Paiement;
+
 use lbs\command\app\error\JsonError as JsonError;
 use Illuminate\Database\Eloquent\ModelNotFoundException as ModelNotFoundException;
 
@@ -78,6 +82,30 @@ class TD1CommandController{
 
             return JsonError::jsonError($req, $resp, 'error', 404,'Ressource not found : command ID = ' . $id );
         }
+    }
+
+    public function testItem(Request $req, Response $resp, array $args): Response{
+        //get all the commands
+        $items = Paiement::select()
+                    ->get();
+
+        //complete the data array with datas who are gonna be returned in JSON format
+        $data = [
+            "type" => "collection",
+            "count" => count($items),
+            "commandes" => $items
+        ];
+
+        //configure the response headers
+        $resp = $resp->withStatus(200)
+            ->withHeader('Content-Type', 'application/json; charset=utf-8');
+
+
+        //write in the body with data encode with a json_encode function
+        $resp->getBody()->write(json_encode($data));
+
+        //return the response (ALWAYS !)
+        return $resp;
     }
 
 }
