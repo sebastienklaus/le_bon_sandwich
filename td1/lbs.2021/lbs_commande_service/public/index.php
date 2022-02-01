@@ -24,12 +24,11 @@ $capsule->addConnection($app_config['settings']['dbfile']);
 $capsule->bootEloquent();
 $capsule->setAsGlobal();
 
-// TD1
-$app->get('/TD1/commands[/]', TD1CommandController::class . ':listCommands');
-$app->get('/TD1/commands/{id}[/]', TD1CommandController::class . ':oneCommand');
 
+$app->get('/commands/{id}[/]', TD1CommandController::class . ':oneCommand');
+$app->put('/commands/{id}[/]', TD3CommandController::class . ':replaceCommand');
 
-//TD3
-$app->put('/TD3/commands/{id}[/]', TD3CommandController::class . ':replaceCommand');
+$app->get('/commands[/]', TD1CommandController::class . ':listCommands');
+
 
 $app->run();
