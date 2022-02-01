@@ -77,6 +77,17 @@ class TD3CommandController{
             return JsonError::jsonError($req, $resp, 'error', 500,'A exception is thrown : something is wrong with the update of datas' ); 
         }
     }
+
+
+// lister les annonces = GET /annonces
+// lister les annonces du 54 = GET /annonces/54
+// lister les annonces de la catégorie 'voitures' = GET categories/voitures/annonces
+// créer une catégorie = POST /categories
+// modifier une annonce existante = PUT /annonces/:id
+// créer une annonce, l'associer à une catégorie et un département = POST /annonces & PUT /categorie/:id/annonces
+// modifier la catégorie d'une annonce = PUT annonces/:id/categories
+// ajouter une image à une annonce = POST annonces/:id/photos
+// supprimer une annonce et toutes les images associées = DELETE /annonces/:id/photos & DELETE /annonces/:id
 }
 
 
