@@ -64,10 +64,10 @@ class CommandController{
             $params = $req->getQueryParam('embed' , null);            
 
             //get the command with some id
-            $commande = Commande::select(['id', 'nom', 'mail', 'montant', 'livraison'])
+            $commande = Commande::select(['id', 'nom', 'created_at', 'livraison', 'mail', 'montant', 'livraison'])
                 ->where('id', '=', $id);
             if($params === 'items'){
-                $commande = $commande->with('items');
+                $commande = $commande->with('items:id,libelle,tarif,quantite,command_id');
             }    
             $commande = $commande->firstOrFail();
 
