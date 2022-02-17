@@ -20,6 +20,15 @@
       ),
       'reference' => NULL,
     ),
+    'brick/math' => 
+    array (
+      'pretty_version' => '0.9.3',
+      'version' => '0.9.3.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => 'ca57d18f028f84f777b2168cd1911b0dee2343ae',
+    ),
     'davidepastore/slim-validation' => 
     array (
       'pretty_version' => 'v0.5.1',
@@ -137,15 +146,6 @@
       ),
       'reference' => '181d480e08d9476e61381e04a71b34dc0432e812',
     ),
-    'paragonie/random_compat' => 
-    array (
-      'pretty_version' => 'v9.99.100',
-      'version' => '9.99.100.0',
-      'aliases' => 
-      array (
-      ),
-      'reference' => '996434e5492cb4c3edcb9168db6fbb1359ef965a',
-    ),
     'pimple/pimple' => 
     array (
       'pretty_version' => 'v3.5.0',
@@ -213,14 +213,23 @@
       ),
       'reference' => '408d5eafb83c57f6365a3ca330ff23aa4a5fa39b',
     ),
-    'ramsey/uuid' => 
+    'ramsey/collection' => 
     array (
-      'pretty_version' => '3.9.6',
-      'version' => '3.9.6.0',
+      'pretty_version' => '1.2.2',
+      'version' => '1.2.2.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'ffa80ab953edd85d5b6c004f96181a538aad35a3',
+      'reference' => 'cccc74ee5e328031b15640b51056ee8d3bb66c0a',
+    ),
+    'ramsey/uuid' => 
+    array (
+      'pretty_version' => '4.2.3',
+      'version' => '4.2.3.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => 'fc9bb7fb5388691fd7373cd44dcb4d63bbcf24df',
     ),
     'respect/validation' => 
     array (
@@ -235,7 +244,7 @@
     array (
       'replaced' => 
       array (
-        0 => '3.9.6',
+        0 => '4.2.3',
       ),
     ),
     'slim/slim' => 
@@ -318,6 +327,15 @@
       array (
       ),
       'reference' => '57b712b08eddb97c762a8caa32c84e037892d2e9',
+    ),
+    'symfony/polyfill-php81' => 
+    array (
+      'pretty_version' => 'v1.24.0',
+      'version' => '1.24.0.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => '5de4ba2d41b15f9bd0e19b2ab9674135813ec98f',
     ),
     'symfony/service-contracts' => 
     array (

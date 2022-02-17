@@ -33,4 +33,7 @@ $app->put('/commands/{id}[/]', CommandController::class . ':replaceCommand')->se
 $app->get('/commands[/]', CommandController::class . ':listCommands')->setName('commands');
 
 
+$app->post('/commands[/]', CommandController::class . ':createCommand')->setName('creationCommand');
+
+
 $app->run();

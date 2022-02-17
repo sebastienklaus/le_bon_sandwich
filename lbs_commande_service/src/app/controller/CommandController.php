@@ -13,6 +13,7 @@ use lbs\command\app\error\JsonError as JsonError;
 use Illuminate\Database\Eloquent\ModelNotFoundException as ModelNotFoundException;
 
 use DateTime;
+use Ramsey\Uuid\Uuid;
 
 
 class CommandController{
@@ -71,9 +72,12 @@ class CommandController{
             }    
             $commande = $commande->firstOrFail();
 
+            $uuid4= Uuid::uuid4();
+
             //complete the data array with datas who are gonna be returned in JSON format
             $data = [
                 "type" => "resource",
+                "test" =>  $uuid4->toString(),
                 "commande" => $commande,
                 "links" => [
                     "items" => ["href" => $url_itemsOfCommand ],
@@ -112,7 +116,7 @@ class CommandController{
         $command_data = $req->getParsedBody();
         
         // if(!isset($command_data['nom_client'])){
-            //     //return error in json with 400 error code with msg 'missing data'
+            // return error in json with 400 error code with msg 'missing data'
             // }
             
             try {
@@ -193,6 +197,19 @@ class CommandController{
             return JsonError::jsonError($req, $resp, 'error', 404,'Ressource not found : command ID = ' . $id );
         }
         
+    }
+
+    // TD 5
+    public static function createCommand(Request $req, Response $resp, array $args): Response{
+
+        //get datas from the request
+        $command_data = $req->getParsedBody();
+
+        $user = User::create([
+            'first_name' => 'Taylor',
+            'last_name' => 'Otwell',
+            'title' => 'Developer',
+        ]);
     }
 
 }
