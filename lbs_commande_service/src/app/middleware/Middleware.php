@@ -12,13 +12,6 @@ use Ramsey\Uuid\Uuid;
 
 class Middleware {
 
-    private $c; // le conteneur de dépendences de l'application
-
-    public function __construct(\Slim\Container $c)
-    {
-        $this->c = $c;
-    }
-
     public static function createID(Request $req, Response $resp, callable $next){
 
         // création d'un ID avec la librairie UUID

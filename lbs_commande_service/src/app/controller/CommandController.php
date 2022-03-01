@@ -17,11 +17,11 @@ use DateTime;
 
 class CommandController{
 
-    private $c; // le conteneur de dépendences de l'application
+    private $container; // le conteneur de dépendences de l'application
 
-    public function __construct(\Slim\Container $c)
+    public function __construct(\Slim\Container $container)
     {
-        $this->c = $c;
+        $this->container = $container;
     }
 
     // TD1 & 2
@@ -59,8 +59,8 @@ class CommandController{
         try {
 
             //get the actual URI & params
-            $url_oneCommand = $this->c->router->pathFor('command', ['id'=>$id]);
-            $url_itemsOfCommand = $this->c->router->pathFor('commandWithItems', ['id'=>$id]);
+            $url_oneCommand = $this->container->router->pathFor('command', ['id'=>$id]);
+            $url_itemsOfCommand = $this->container->router->pathFor('commandWithItems', ['id'=>$id]);
             $params = $req->getQueryParam('embed' , null);            
 
             //get the command with some id
@@ -194,6 +194,7 @@ class CommandController{
     
     // TD 5.1
     public static function createCommand(Request $req, Response $resp, array $args): Response{
+        
         try {
             //get datas from the request
             $command_data = $req->getParsedBody();
@@ -204,10 +205,29 @@ class CommandController{
             //get the token in the middleware createToken
             $token_commande = $req->getAttribute('token') ;
 
-            // $url_oneCommand = $this->c->router->pathFor('command', ['id'=>$uuid_commande]);
+
+            /**
+             * Création de la commande avec le token + uuid
+             */
+            $new_command = new Commande();
+
+            $new_command->nom = filter_var($command_data['nom'], FILTER_SANITIZE_STRING);
+            $new_command->mail = filter_var($command_data['mail'], FILTER_SANITIZE_EMAIL);
+            $new_command->livraison = DateTime::createFromFormat(
+                'Y-m-d H:i',
+                $command_data['livraison']['date'] . ' ' .
+                    $command_data['livraison']['heure']
+            );
+            $new_command->id = $uuid_commande;
+            $new_command->montant = 0;
+            $new_command->token = $token_commande;
+            $new_command->save();
+
+            $uri_getCommand = $this->container;
 
             $data = [
                 "commande" => [
+                    'test' => $uri_getCommand,
                     'nom'=> $command_data['nom'],
                     'mail'=> $command_data['mail'],
                     'date_livraison'=> $command_data['livraison']['date'] . ' ' . $command_data['livraison']['heure'],
@@ -217,20 +237,12 @@ class CommandController{
                 ],
             ];
 
-            $new_command = new Commande();
-            // $new_command->id = $uuid_commande;
-            // $new_command->livraison = $command_data['livraison']['date'] . ' ' . $command_data['livraison']['heure'];
-            // $new_command->nom = $command_data['nom'];
-            // $new_command->mail = $command_data['mail'];
-            // $new_command->montant = 0;
-            // $new_command->token = $token_commande;
-            $new_command->save();
 
 
              //configure the response headers
             $resp = $resp->withStatus(201)
                         ->withHeader('Content-Type', 'application/json; charset=utf-8');
-                        // ->withHeader('Location', '$url_oneCommand');
+                        // ->withHeader('Location', $uri_getCommand);
 
             //write in the body with data encode with a json_encode function
             $resp->getBody()->write(json_encode($data));
