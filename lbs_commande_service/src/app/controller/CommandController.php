@@ -223,7 +223,7 @@ class CommandController{
             $new_command->token = $token_commande;
             $new_command->save();
 
-            $uri_getCommand = $this->container;
+            $uri_getCommand = $this->container->router->pathFor('command', ['id' => $new_command->id]);;
 
             $data = [
                 "commande" => [
