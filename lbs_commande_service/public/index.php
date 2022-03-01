@@ -4,8 +4,9 @@ require_once  __DIR__ . '/../src/vendor/autoload.php';
 
 use \Psr\Http\Message\ServerRequestInterface as Request ;
 use \Psr\Http\Message\ResponseInterface as Response ;
-use \lbs\command\app\controller\CommandController as CommandController;
 
+use \lbs\command\app\controller\CommandController as CommandController;
+use \lbs\command\app\middleware\Middleware as Middleware;
 
 use \lbs\command\app\model\Commande as Commande;
 
@@ -33,7 +34,10 @@ $app->put('/commands/{id}[/]', CommandController::class . ':replaceCommand')->se
 $app->get('/commands[/]', CommandController::class . ':listCommands')->setName('commands');
 
 
-$app->post('/commands[/]', CommandController::class . ':createCommand')->setName('creationCommand');
+$app->post('/commands[/]', CommandController::class . ':createCommand')
+    ->setName('creationCommand')
+    ->add(Middleware::class . ':createID')
+    ->add(Middleware::class . ':createToken');
 
 
 $app->run();
