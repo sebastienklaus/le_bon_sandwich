@@ -13,7 +13,6 @@ use lbs\command\app\error\JsonError as JsonError;
 use Illuminate\Database\Eloquent\ModelNotFoundException as ModelNotFoundException;
 
 use DateTime;
-use Ramsey\Uuid\Uuid;
 
 
 class CommandController{
@@ -72,12 +71,10 @@ class CommandController{
             }    
             $commande = $commande->firstOrFail();
 
-            $uuid4= Uuid::uuid4();
 
             //complete the data array with datas who are gonna be returned in JSON format
             $data = [
                 "type" => "resource",
-                "test" =>  $uuid4->toString(),
                 "commande" => $commande,
                 "links" => [
                     "items" => ["href" => $url_itemsOfCommand ],
@@ -114,10 +111,6 @@ class CommandController{
 
         //get the body of the request
         $command_data = $req->getParsedBody();
-        
-        // if(!isset($command_data['nom_client'])){
-            // return error in json with 400 error code with msg 'missing data'
-            // }
             
             try {
             //get the command to replace
@@ -198,19 +191,65 @@ class CommandController{
         }
         
     }
-
-    // TD 5
+    
+    // TD 5.1
     public static function createCommand(Request $req, Response $resp, array $args): Response{
+        try {
+            //get datas from the request
+            $command_data = $req->getParsedBody();
 
-        //get datas from the request
-        $command_data = $req->getParsedBody();
+            //get the uuid commande in the middleware createID
+            $uuid_commande = $req->getAttribute('idCommande');
 
-        $user = User::create([
-            'first_name' => 'Taylor',
-            'last_name' => 'Otwell',
-            'title' => 'Developer',
-        ]);
+            //get the token in the middleware createToken
+            $token_commande = $req->getAttribute('token') ;
+
+            // $url_oneCommand = $this->c->router->pathFor('command', ['id'=>$uuid_commande]);
+
+            $data = [
+                "commande" => [
+                    'nom'=> $command_data['nom'],
+                    'mail'=> $command_data['mail'],
+                    'date_livraison'=> $command_data['livraison']['date'] . ' ' . $command_data['livraison']['heure'],
+                    'id' => $uuid_commande,
+                    'token' => $token_commande,
+                    'montant' => 0,
+                ],
+            ];
+
+            $new_command = new Commande();
+            // $new_command->id = $uuid_commande;
+            // $new_command->livraison = $command_data['livraison']['date'] . ' ' . $command_data['livraison']['heure'];
+            // $new_command->nom = $command_data['nom'];
+            // $new_command->mail = $command_data['mail'];
+            // $new_command->montant = 0;
+            // $new_command->token = $token_commande;
+            $new_command->save();
+
+
+             //configure the response headers
+            $resp = $resp->withStatus(201)
+                        ->withHeader('Content-Type', 'application/json; charset=utf-8');
+                        // ->withHeader('Location', '$url_oneCommand');
+
+            //write in the body with data encode with a json_encode function
+            $resp->getBody()->write(json_encode($data));
+
+            //return the response (ALWAYS !)
+            return $resp;
+
+        } catch (ModelNotFoundException $e) {
+            return JsonError::jsonError($req, $resp, 'error', 404,'Ressource not found : command ID = ' . $id );
+        }
+        catch (\Exception $th) {
+            return JsonError::jsonError($req, $resp, 'error', 500,'A exception is thrown : something is wrong with the update of datas' ); 
+        }
+
+
+        
+        
     }
+
 
 }
 
