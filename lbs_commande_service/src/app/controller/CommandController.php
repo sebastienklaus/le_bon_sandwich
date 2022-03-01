@@ -223,11 +223,11 @@ class CommandController{
             $new_command->token = $token_commande;
             $new_command->save();
 
-            $uri_getCommand = $this->container->router->pathFor('command', ['id' => $new_command->id]);;
+            // $uri_getCommand = $this->container->router->pathFor('command', ['id' => $new_command->id]);;
 
             $data = [
                 "commande" => [
-                    'test' => $uri_getCommand,
+                    // 'test' => $uri_getCommand,
                     'nom'=> $command_data['nom'],
                     'mail'=> $command_data['mail'],
                     'date_livraison'=> $command_data['livraison']['date'] . ' ' . $command_data['livraison']['heure'],
