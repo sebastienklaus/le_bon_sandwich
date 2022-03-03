@@ -35,5 +35,15 @@ class Middleware {
 
         return $resp;
     }
+    public static function checkToken(Request $req, Response $resp, callable $next){
+
+        $token = $req->getQueryParam('token' , null);
+
+        $req = $req->withAttribute( 'token' , $token ) ;
+
+        $resp = $next($req,$resp);
+
+        return $resp;
+    }
 
 }
