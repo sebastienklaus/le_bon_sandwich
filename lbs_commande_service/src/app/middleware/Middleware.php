@@ -38,7 +38,8 @@ class Middleware {
     }
 
     public static function checkToken(Request $req, Response $resp, callable $next){
-        //
+        $queryParams = $req->getQueryParams();
+        
         if (isset($queryParams['token'])){
             $token_uri = $req->getQueryParam('token' , null);
             $req = $req->withAttribute( 'token' , $token_uri );
