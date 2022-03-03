@@ -50,7 +50,7 @@ class CommandController{
         return $resp;
     }
 
-    // TD 1,2 & 4
+    // TD 1 & 2 & 4 & 5.2
     public function oneCommand(Request $req, Response $resp, array $args): Response {
         //get the id in the URI with the args array
         $id = $args['id'];
@@ -61,12 +61,15 @@ class CommandController{
             //get the actual URI & params
             $url_oneCommand = $this->container->router->pathFor('command', ['id'=>$id]);
             $url_itemsOfCommand = $this->container->router->pathFor('commandWithItems', ['id'=>$id]);
-            $params = $req->getQueryParam('embed' , null);            
+            $param_embed = $req->getQueryParam('embed' , null); 
+
+            $param_token = $req->getAttribute('token') ;          
 
             //get the command with some id
-            $commande = Commande::select(['id', 'nom', 'created_at', 'livraison', 'mail', 'montant', 'livraison'])
-                ->where('id', '=', $id);
-            if($params === 'items'){
+            $commande = Commande::select(['id', 'nom', 'created_at', 'livraison', 'mail', 'montant', 'livraison', 'token'])
+                ->where('id', '=', $id)
+                ->where('token', '=', $param_token);
+            if($param_embed === 'items'){
                 $commande = $commande->with('items:id,libelle,tarif,quantite,command_id');
             }    
             $commande = $commande->firstOrFail();
@@ -97,8 +100,8 @@ class CommandController{
         }
         //in case there is 0 ressource with this id ... 
         catch (ModelNotFoundException $e) {
-            $this->c->logger_debug->debug('GET / : debug (c\'est pas très grave, pas de gros soucis pour l\'instant');
-            $this->c->logger_warning->warning('GET / : warning (au secours, tout va mal chef !');
+            $this->container->logger_debug->debug('GET / : debug (c\'est pas très grave, pas de gros soucis pour l\'instant');
+            $this->container->logger_warning->warning('GET / : warning (au secours, tout va mal chef !');
             return JsonError::jsonError($req, $resp, 'error', 404,'Ressource not found : command ID = ' . $id );   
 
         }
@@ -210,30 +213,28 @@ class CommandController{
              * Création de la commande avec le token + uuid
              */
             $new_command = new Commande();
+            $date = DateTime::createFromFormat('Y-m-d H:i:s', $command_data['livraison']['date'] . "  " . $command_data['livraison']['heure']); //false :/
 
             $new_command->nom = filter_var($command_data['nom'], FILTER_SANITIZE_STRING);
             $new_command->mail = filter_var($command_data['mail'], FILTER_SANITIZE_EMAIL);
-            $new_command->livraison = DateTime::createFromFormat(
-                'Y-m-d H:i',
-                $command_data['livraison']['date'] . ' ' .
-                    $command_data['livraison']['heure']
-            );
+            $new_command->livraison = $date;
             $new_command->id = $uuid_commande;
-            $new_command->montant = 0;
+            $new_command->montant = 0.00;
             $new_command->token = $token_commande;
             $new_command->save();
 
-            // $uri_getCommand = $this->container->router->pathFor('command', ['id' => $new_command->id]);;
+            $uri_getCommand = '/commands/'. $new_command->id;
+            // $uri_getCommand = $this->container->router->pathFor('command', ['id' => $new_command->id]);
 
             $data = [
                 "commande" => [
                     // 'test' => $uri_getCommand,
                     'nom'=> $command_data['nom'],
                     'mail'=> $command_data['mail'],
-                    'date_livraison'=> $command_data['livraison']['date'] . ' ' . $command_data['livraison']['heure'],
+                    'date_livraison'=> $command_data['livraison']['date'] . " " . $command_data['livraison']['heure'],
                     'id' => $uuid_commande,
                     'token' => $token_commande,
-                    'montant' => 0,
+                    'montant' => $new_command->montant,
                 ],
             ];
 
@@ -241,8 +242,8 @@ class CommandController{
 
              //configure the response headers
             $resp = $resp->withStatus(201)
-                        ->withHeader('Content-Type', 'application/json; charset=utf-8');
-                        // ->withHeader('Location', $uri_getCommand);
+                        ->withHeader('Content-Type', 'application/json; charset=utf-8')
+                        ->withHeader('Location', $uri_getCommand);
 
             //write in the body with data encode with a json_encode function
             $resp->getBody()->write(json_encode($data));
