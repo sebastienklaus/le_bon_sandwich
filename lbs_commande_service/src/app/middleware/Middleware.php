@@ -13,7 +13,6 @@ use Ramsey\Uuid\Uuid;
 class Middleware {
 
     public static function createID(Request $req, Response $resp, callable $next){
-
         // création d'un ID avec la librairie UUID
         $uuid4_id = Uuid::uuid4();
         // creation de l'attribut "idCommande"
@@ -25,7 +24,6 @@ class Middleware {
     }
         
     public static function createToken(Request $req, Response $resp, callable $next){
-
         $token = random_bytes(32);
         $token = bin2hex($token);
         // creation de l'attribut "token"
@@ -35,11 +33,17 @@ class Middleware {
 
         return $resp;
     }
+
     public static function checkToken(Request $req, Response $resp, callable $next){
-
-        $token = $req->getQueryParam('token' , null);
-
-        $req = $req->withAttribute( 'token' , $token ) ;
+        //
+        if (isset($queryParams['token'])){
+            $token_uri = $req->getQueryParam('token' , null);
+            $req = $req->withAttribute( 'token' , $token_uri );
+        }
+        else {
+            $token_header = $req->getHeader('X-lbs-token');
+            $req = $req->withAttribute( 'token' , $token_header );
+        }
 
         $resp = $next($req,$resp);
 
