@@ -28,7 +28,9 @@ $capsule->setAsGlobal();
 
 $app->get('/commands/{id}/items[/]', CommandController::class . ':getItemsOfCommand')->setName('commandWithItems');
 
-$app->get('/commands/{id}[/]', CommandController::class . ':oneCommand')->setName('command');
+$app->get('/commands/{id}[/]', CommandController::class . ':oneCommand')
+    ->setName('command')
+    ->add(Middleware::class . ':checkToken');
 $app->put('/commands/{id}[/]', CommandController::class . ':replaceCommand')->setName('replaceCommand');
 
 $app->get('/commands[/]', CommandController::class . ':listCommands')->setName('commands');
