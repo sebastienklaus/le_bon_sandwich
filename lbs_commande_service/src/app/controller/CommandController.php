@@ -208,32 +208,53 @@ class CommandController{
             //get the token in the middleware createToken
             $token_commande = $req->getAttribute('token') ;
 
-
-            /**
+            // $uri_getCommand = $this->container->router->pathFor('command', ['id' => $new_command->id]);
+            
+            /** 
              * Création de la commande avec le token + uuid
              */
             $new_command = new Commande();
             $date = DateTime::createFromFormat('Y-m-d H:i:s', $command_data['livraison']['date'] . "  " . $command_data['livraison']['heure']); //false :/
-
+            //on filtre les données nom & mail
             $new_command->nom = filter_var($command_data['nom'], FILTER_SANITIZE_STRING);
             $new_command->mail = filter_var($command_data['mail'], FILTER_SANITIZE_EMAIL);
             $new_command->livraison = $date;
+            // l'id = uuid crée par le middleware dédié
             $new_command->id = $uuid_commande;
-            $new_command->montant = 0.00;
+            //token = token crée par le middleware dédié
             $new_command->token = $token_commande;
-            $new_command->save();
-
+            
+            // ! URI-getCommand TEMPORAIRE (impossible d'accèder au container)
             $uri_getCommand = '/commands/'. $new_command->id;
-            // $uri_getCommand = $this->container->router->pathFor('command', ['id' => $new_command->id]);
+            
+            foreach ($command_data['items'] as $item ) {
+                //on initailise le montant total 
+                $montant_total = 0.00;
+
+                // on crée un nouvel Item en définissant chacun de ses attributs
+                $new_item = new Item();
+                $new_item->uri = $item['uri'];
+                $new_item->quantite = $item['q'];
+                $new_item->libelle = $item['libelle'];
+                $new_item->tarif = $item['tarif'];
+                $new_item->command_id = $new_command->id;
+                $new_item->save();
+
+                //on augment le tarif total pour chaque tarif d'item
+                $montant_total += $item['tarif'];
+            }
+            //le montant total de la commande se réfère au montant calculé précedemment
+            $new_command->montant = $montant_total;
+            // on sauvegarde la nouvelle commande
+            $new_command->save();
 
             $data = [
                 "commande" => [
-                    // 'test' => $uri_getCommand,
-                    'nom'=> $command_data['nom'],
-                    'mail'=> $command_data['mail'],
-                    'date_livraison'=> $command_data['livraison']['date'] . " " . $command_data['livraison']['heure'],
-                    'id' => $uuid_commande,
-                    'token' => $token_commande,
+                    'nom'=> $new_command->nom,
+                    'mail'=> $new_command->mail,
+                    // ! 'date_livraison'=> $command_data['livraison']['date'] . " " . $command_data['livraison']['heure'],
+                    'id' => $new_command->id,
+                    'token' => $new_command->token,
                     'montant' => $new_command->montant,
                 ],
             ];
