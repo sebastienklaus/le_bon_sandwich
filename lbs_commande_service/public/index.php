@@ -32,7 +32,7 @@ $validators = [
         'heure' => v::date('H:i')->between('00:00', '23:59'),
     ],
     ];
-
+//items : array val each
 
 
 $app->get('/commands[/]', CommandController::class . ':listCommands')
