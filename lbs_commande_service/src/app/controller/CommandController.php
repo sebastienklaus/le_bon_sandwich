@@ -257,8 +257,7 @@ class CommandController{
                 "commande" => [
                     'nom'=> $new_command->nom,
                     'mail'=> $new_command->mail,
-                    'date_livraison'=> $command_data['livraison']['date'] . ' ' .
-                    $command_data['livraison']['heure'],
+                    'date_livraison'=> $date_livraison->format('Y-m-d'),
                     'id' => $new_command->id,
                     'token' => $new_command->token,
                     'montant' => $new_command->montant,
