@@ -200,91 +200,88 @@ class CommandController{
 
         // initialisation du montant total de la commande
         $montant_total = 0.00;
-        
-        try {
-            //get datas from the request
-            $command_data = $req->getParsedBody();
-
-            //get the uuid commande in the middleware createID
-            $uuid_commande = $req->getAttribute('idCommande');
-
-            //get the token in the middleware createToken
-            $token_commande = $req->getAttribute('token') ;
-
-            
-            /** 
-             * Création de la commande avec le token + uuid
-             */
-            $new_command = new Commande();
-            $date_livraison = new DateTime($command_data['livraison']['date'] .' '. $command_data['livraison']['heure']);
-
-            //on filtre les données nom & mail
-            $new_command->nom = filter_var($command_data['nom'], FILTER_SANITIZE_STRING);
-            $new_command->mail = filter_var($command_data['mail'], FILTER_SANITIZE_EMAIL);
-            $new_command->livraison = $date_livraison->format('Y-m-d H:i');
-            // l'id = uuid crée par le middleware dédié
-            $new_command->id = $uuid_commande;
-            //token = token crée par le middleware dédié
-            $new_command->token = $token_commande;
-            
-            // ! URI-getCommand TEMPORAIRE (impossible d'accèder au container)
-            // $uri_getCommand = '/commands/'. $new_command->id;
-            
 
 
+        if ($req->getAttribute('has_errors')) {
+            $errors = $req->getAttribute('errors');
+        } else {
+            try {
+                //get datas from the request
+                $command_data = $req->getParsedBody();
 
-            foreach ($command_data['items'] as $item ) {
-                // on crée un nouvel Item en définissant chacun de ses attributs
-                $new_item = new Item();
-                $new_item->uri = $item['uri'];
-                $new_item->quantite = $item['q'];
-                $new_item->libelle = $item['libelle'];
-                $new_item->tarif = $item['tarif'];
-                $new_item->command_id = $new_command->id;
-                $new_item->save();
+                //get the uuid commande in the middleware createID
+                $uuid_commande = $req->getAttribute('idCommande');
 
-                //on augment le tarif total pour chaque tarif d'item
-                $montant_total += $item['tarif'];
+                //get the token in the middleware createToken
+                $token_commande = $req->getAttribute('token') ;
+
+                
+                /** 
+                 * Création de la commande avec le token + uuid
+                 */
+                // ! Création d'un DateTime pour insérer la date de livraison dans le modèle
+                $date_livraison = new DateTime($command_data['livraison']['date'] .' '. $command_data['livraison']['heure']);
+                
+                $new_command = new Commande();
+                //on filtre les données nom & mail
+                $new_command->nom = filter_var($command_data['nom'], FILTER_SANITIZE_STRING);
+                $new_command->mail = filter_var($command_data['mail'], FILTER_SANITIZE_EMAIL);
+                $new_command->livraison = $date_livraison->format('Y-m-d H:i');
+                // id = uuid crée par le middleware dédié
+                $new_command->id = $uuid_commande;
+                //token = token crée par le middleware dédié
+                $new_command->token = $token_commande;  
+
+
+                foreach ($command_data['items'] as $item ) {
+                    // on crée un nouvel Item en définissant chacun de ses attributs
+                    $new_item = new Item();
+                    $new_item->uri = $item['uri'];
+                    $new_item->quantite = $item['q'];
+                    $new_item->libelle = $item['libelle'];
+                    $new_item->tarif = $item['tarif'];
+                    $new_item->command_id = $new_command->id;
+                    $new_item->save();
+
+                    //on augment le tarif total pour chaque tarif d'item
+                    $montant_total += $item['tarif'];
+                }
+                //le montant total de la commande se réfère au montant calculé précedemment
+                $new_command->montant = $montant_total;
+                // on sauvegarde la nouvelle commande
+                $new_command->save();
+
+                // uri pour 1 commande (celle crée précédemment)
+                $uri_getCommand = $this->container->router->pathFor('command', ['id'=>$new_command->id]);
+                
+                // initialisation du tableau de data dans le body de la réponse
+                $data = [
+                    "commande" => [
+                        'nom'=> $new_command->nom,
+                        'mail'=> $new_command->mail,
+                        'date_livraison'=> $date_livraison->format('Y-m-d'),
+                        'id' => $new_command->id,
+                        'token' => $new_command->token,
+                        'montant' => $new_command->montant,
+                        // 'montant' => $uri_getCommand,
+                    ],
+                ];
+
+                //configure the response headers
+                $resp = $resp->withStatus(201)
+                            ->withHeader('Content-Type', 'application/json; charset=utf-8')
+                            ->withHeader('Location', $uri_getCommand);
+
+                //write in the body with data encode with a json_encode function
+                $resp->getBody()->write(json_encode($data));
+
+                //return the response (ALWAYS !)
+                return $resp;
             }
-            //le montant total de la commande se réfère au montant calculé précedemment
-            $new_command->montant = $montant_total;
-            // on sauvegarde la nouvelle commande
-            $new_command->save();
-
-            $uri_getCommand = $this->container->router->pathFor('command', ['id'=>$new_command->id]);
-
-            $data = [
-                "commande" => [
-                    'nom'=> $new_command->nom,
-                    'mail'=> $new_command->mail,
-                    'date_livraison'=> $date_livraison->format('Y-m-d'),
-                    'id' => $new_command->id,
-                    'token' => $new_command->token,
-                    'montant' => $new_command->montant,
-                    // 'montant' => $uri_getCommand,
-                ],
-            ];
-
-
-
-             //configure the response headers
-            $resp = $resp->withStatus(201)
-                        ->withHeader('Content-Type', 'application/json; charset=utf-8')
-                        ->withHeader('Location', $uri_getCommand);
-
-            //write in the body with data encode with a json_encode function
-            $resp->getBody()->write(json_encode($data));
-
-            //return the response (ALWAYS !)
-            return $resp;
-
+            catch (\Exception $th) {
+                return JsonError::jsonError($req, $resp, 'error', 500,'A exception is thrown : something is wrong with the update of datas' ); 
+            }
         }
-        catch (\Exception $th) {
-            return JsonError::jsonError($req, $resp, 'error', 500,'A exception is thrown : something is wrong with the update of datas' ); 
-        }
-
-
-        
         
     }
 
