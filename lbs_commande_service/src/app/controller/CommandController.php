@@ -63,7 +63,7 @@ class CommandController{
             $url_itemsOfCommand = $this->container->router->pathFor('commandWithItems', ['id'=>$id]);
             $param_embed = $req->getQueryParam('embed' , null); 
 
-            $param_token = $req->getAttribute('token') ;          
+            $param_token = $req->getAttribute('token');
 
             //get the command with some id
             $commande = Commande::select(['id', 'nom', 'created_at', 'livraison', 'mail', 'montant', 'livraison', 'token'])
@@ -163,7 +163,7 @@ class CommandController{
     }
 
     // TD 4
-    public static function getItemsOfCommand(Request $req, Response $resp, array $args): Response{
+    public function getItemsOfCommand(Request $req, Response $resp, array $args): Response{
         $id = $args['id'];
         try {
             //get all the commands
@@ -196,7 +196,10 @@ class CommandController{
     }
     
     // TD 5.1
-    public static function createCommand(Request $req, Response $resp, array $args): Response{
+    public function createCommand(Request $req, Response $resp, array $args): Response{
+
+        // initialisation du montant total de la commande
+        $montant_total = 0.00;
         
         try {
             //get datas from the request
@@ -208,29 +211,29 @@ class CommandController{
             //get the token in the middleware createToken
             $token_commande = $req->getAttribute('token') ;
 
-            // $uri_getCommand = $this->container->router->pathFor('command', ['id' => $new_command->id]);
             
             /** 
              * Création de la commande avec le token + uuid
              */
             $new_command = new Commande();
-            $date = DateTime::createFromFormat('Y-m-d H:i:s', $command_data['livraison']['date'] . "  " . $command_data['livraison']['heure']); //false :/
+            $date_livraison = new DateTime($command_data['livraison']['date'] .' '. $command_data['livraison']['heure']);
+
             //on filtre les données nom & mail
             $new_command->nom = filter_var($command_data['nom'], FILTER_SANITIZE_STRING);
             $new_command->mail = filter_var($command_data['mail'], FILTER_SANITIZE_EMAIL);
-            $new_command->livraison = $date;
+            $new_command->livraison = $date_livraison->format('Y-m-d H:i');
             // l'id = uuid crée par le middleware dédié
             $new_command->id = $uuid_commande;
             //token = token crée par le middleware dédié
             $new_command->token = $token_commande;
             
             // ! URI-getCommand TEMPORAIRE (impossible d'accèder au container)
-            $uri_getCommand = '/commands/'. $new_command->id;
+            // $uri_getCommand = '/commands/'. $new_command->id;
             
-            foreach ($command_data['items'] as $item ) {
-                //on initailise le montant total 
-                $montant_total = 0.00;
 
+
+
+            foreach ($command_data['items'] as $item ) {
                 // on crée un nouvel Item en définissant chacun de ses attributs
                 $new_item = new Item();
                 $new_item->uri = $item['uri'];
@@ -248,14 +251,18 @@ class CommandController{
             // on sauvegarde la nouvelle commande
             $new_command->save();
 
+            $uri_getCommand = $this->container->router->pathFor('command', ['id'=>$new_command->id]);
+
             $data = [
                 "commande" => [
                     'nom'=> $new_command->nom,
                     'mail'=> $new_command->mail,
-                    // ! 'date_livraison'=> $command_data['livraison']['date'] . " " . $command_data['livraison']['heure'],
+                    'date_livraison'=> $command_data['livraison']['date'] . ' ' .
+                    $command_data['livraison']['heure'],
                     'id' => $new_command->id,
                     'token' => $new_command->token,
                     'montant' => $new_command->montant,
+                    // 'montant' => $uri_getCommand,
                 ],
             ];
 
@@ -272,8 +279,6 @@ class CommandController{
             //return the response (ALWAYS !)
             return $resp;
 
-        } catch (ModelNotFoundException $e) {
-            return JsonError::jsonError($req, $resp, 'error', 404,'Ressource not found : command ID = ' . $id );
         }
         catch (\Exception $th) {
             return JsonError::jsonError($req, $resp, 'error', 500,'A exception is thrown : something is wrong with the update of datas' ); 

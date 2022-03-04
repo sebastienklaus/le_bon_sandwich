@@ -13,6 +13,13 @@ use \DavidePastore\Slim\Validation\Validation as Validation ;
 
 class Middleware {
 
+    private $container; // le conteneur de dépendences de l'application
+
+    public function __construct(\Slim\Container $container)
+    {
+        $this->container = $container;
+    }
+
     // * création d'un ID avec un UUID (utilisation de la librairie Ramsey\UUID)
     public static function createID(Request $req, Response $resp, callable $next){
         // création d'un ID avec la librairie UUID
