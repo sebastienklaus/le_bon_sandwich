@@ -15,14 +15,16 @@ return [
     },
 
     //error 500
+    'phpErrorHandler' => function( $c ) {
+        return ErrorHandler::phpErrorHandler();
+    },
+
+    //error ?
     'errorHandler' => function( $c ) {
         return ErrorHandler::errorHandler();
     },
 
-    //error 500
-    'phpErrorHandler' => function( $c ) {
-        return ErrorHandler::errorHandler();
-    },
+    
 
 
 ];
