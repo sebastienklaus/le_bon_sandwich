@@ -9,7 +9,7 @@ use Psr\Container\ContainerInterface;
 
 class ErrorHandler extends \Exception{
 
-    static public function notFound(){
+    static public function errorHandler(){
             return function( $req, $resp ) {
                 $error = 400;
                 $msg = "Bad Request - URI non traitée";
@@ -29,11 +29,11 @@ class ErrorHandler extends \Exception{
     }
 
 
-    static public function errorHandler(){
+    static public function notFound(){
         return function( $req, $resp ) {
             $uri = $req->getUri();
             $error = 404;
-            $msg = "Bad Request | Ressource non disponible : $uri";
+            $msg = "Ressource non disponible : $uri";
 
             $data = [
                 "type" => "error",
@@ -69,9 +69,7 @@ class ErrorHandler extends \Exception{
             
             $resp= $resp->withStatus( $error ) ;
             $resp->getBody()
-                    ->write( 'error :' . $e->getMessage() ) 
-                    ->write( 'file : ' . $e->getFile() )
-                    ->write( 'line : ' . $e->getLine() ) ;
+                    ->write( 'error :' . $e->getMessage() . ' in file : ' . $e->getFile() . ' line : ' . $e->getLine());
             return $resp ;
         };
     }
