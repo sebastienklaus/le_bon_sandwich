@@ -29,7 +29,7 @@ $validators = [
     'mail' => v::email() ,
     'livraison' => [
         'date' => v::date('d-m-Y')->min('now'),
-        'heure' => v::date('H:i')->between('00:00', '23:59'),
+        'heure' => v::date('H:i:s'),
     ],
     ];
 //items : array val each

@@ -226,7 +226,7 @@ class CommandController{
                 //on filtre les données nom & mail
                 $new_command->nom = filter_var($command_data['nom'], FILTER_SANITIZE_STRING);
                 $new_command->mail = filter_var($command_data['mail'], FILTER_SANITIZE_EMAIL);
-                $new_command->livraison = $date_livraison->format('Y-m-d H:i');
+                $new_command->livraison = $date_livraison->format('Y-m-d H:i:s');
                 // id = uuid crée par le middleware dédié
                 $new_command->id = $uuid_commande;
                 //token = token crée par le middleware dédié
