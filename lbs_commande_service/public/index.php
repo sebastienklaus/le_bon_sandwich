@@ -7,7 +7,7 @@ use \lbs\command\app\middleware\Middleware as Middleware;
 
 use \Respect\Validation\Validator as v;
 use \DavidePastore\Slim\Validation\Validation as Validation ;
-
+use Respect\Validation\Rules\ArrayVal;
 
 $settings = require_once __DIR__. '/../src/app/conf/settings.php';
 $errors = require_once __DIR__. '/../src/app/conf/errors.php';
@@ -25,12 +25,22 @@ $capsule->setAsGlobal();
 
 $validators = [
     'nom' => v::StringType()->alpha() ,
-    // 'login' => v::alnum()->length(3,8) ,
     'mail' => v::email() ,
     'livraison' => [
         'date' => v::date('d-m-Y')->min('now'),
         'heure' => v::date('H:i:s'),
     ],
+    'items' => v::arrayType()->each(
+        // v::key('q', v::numeric()),
+        // v::key('libelle', v::StringType()->alpha()),
+        // v::key('tarif', v::floatType()),
+        v::arrayVal()
+            ->key('uri', v::stringType()->alnum('/'))
+            ->key('q', v::intType()->positive())
+            ->key('libelle', v::stringType()->alpha())
+            ->key('tarif', v::floatType()),
+
+    ),
     ];
 //items : array val each
 
