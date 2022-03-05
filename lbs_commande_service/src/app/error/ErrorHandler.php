@@ -69,7 +69,7 @@ class ErrorHandler extends \Exception{
             
             $resp= $resp->withStatus( $error ) ;
             $resp->getBody()
-                    ->write( 'error :' . $e->getMessage() . ' in file : ' . $e->getFile() . ' line : ' . $e->getLine());
+                    ->write( 'error :' . $e->getMessage() . ' in file : ' . $e->getFile() . ' line : ' . $e->getLine() . PHP_EOL);
             return $resp ;
         };
     }

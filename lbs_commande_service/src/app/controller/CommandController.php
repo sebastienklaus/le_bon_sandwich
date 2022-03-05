@@ -204,6 +204,7 @@ class CommandController{
 
         if ($req->getAttribute('has_errors')) {
             $errors = $req->getAttribute('errors');
+            print_r($errors);
         } else {
             try {
                 //get datas from the request

@@ -41,8 +41,7 @@ $validators = [
             ->key('tarif', v::floatType()),
 
     ),
-    ];
-//items : array val each
+];
 
 
 $app->get('/commands[/]', CommandController::class . ':listCommands')
