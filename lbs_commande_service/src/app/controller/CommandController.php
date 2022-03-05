@@ -278,6 +278,9 @@ class CommandController{
                 //return the response (ALWAYS !)
                 return $resp;
             }
+            catch (ModelNotFoundException $e) {
+                return JsonError::jsonError($req, $resp, 'error', 404,'Ressource not found : command ID = ' . $uuid_commande );
+            }
             catch (\Exception $th) {
                 return JsonError::jsonError($req, $resp, 'error', 500,'A exception is thrown : something is wrong with the update of datas' ); 
             }
