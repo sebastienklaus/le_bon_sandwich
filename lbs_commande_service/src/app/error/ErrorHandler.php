@@ -66,10 +66,15 @@ class ErrorHandler extends \Exception{
     static public function phpErrorHandler(){
         return function( $req, $resp, $e ) {
             $error = 500;
+            $msg = [
+                'error' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine()
+            ];
             
             $resp= $resp->withStatus( $error ) ;
             $resp->getBody()
-                    ->write( 'error :' . $e->getMessage() . ' in file : ' . $e->getFile() . ' line : ' . $e->getLine() . PHP_EOL);
+                    ->write(json_encode($msg));
             return $resp ;
         };
     }
