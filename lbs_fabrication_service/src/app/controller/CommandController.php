@@ -62,6 +62,24 @@ class CommandController{
             $page = $last_page;
         }
 
+        //Next page
+        if ($page > 1) {
+            if ($page < $last_page) {
+                $nextPage = $page + 1;
+            } else {
+                $nextPage = $last_page;
+            }
+        } else {
+            $nextPage = 2;
+        }
+
+        //Prev page
+        if ($page > 1) {
+            $prevPage = $page - 1;
+        } else {
+            $prevPage = 1;
+        }
+
         //initiate offset value
         $offset = ($page - 1) * $size;
 
@@ -85,7 +103,11 @@ class CommandController{
                     'status' => $commande['status']
                 ],
                 'links' => [
-                    'self' => [ 'href' => $url_oneCommand]
+                    'self' => [ 'href' => $url_oneCommand],
+                    'next' => [ 'href' => $this->container->router->pathFor('allCommands',[],['page' => $nextPage,'size' => $size])],                            
+                    'prev' => [ 'href' => $this->container->router->pathFor('allCommands',[],['page' => $prevPage,'size' => $size])],                            
+                    'first'=> [ 'href' => $this->container->router->pathFor('allCommands',[],['page' => 1,'size' => $size])],                            
+                    'last' => [ 'href' => $this->container->router->pathFor('allCommands',[],['page' => $last_page,'size' => $size])],
                 ]
             ];
         };
