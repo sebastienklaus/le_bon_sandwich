@@ -17,6 +17,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException as ModelNotFoundExceptio
 class CommandController{
 
     private $container; // le conteneur de dépendences de l'application
+    const ELEMENTS_PAGE = 10;
 
     public function __construct(\Slim\Container $container)
     {
@@ -26,6 +27,9 @@ class CommandController{
     public function allCommands(Request $req, Response $resp, array $args): Response{
         //get attribute 'status' from middleware 'filterStatus()'
         $param_status = $req->getAttribute('status');
+
+        //
+        $param_page = $req->getAttribute('page');
 
         //get all the commands
         $allCommandes = Commande::select(['id', 'nom', 'created_at', 'livraison', 'status']);
