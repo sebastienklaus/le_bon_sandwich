@@ -25,47 +25,61 @@ class CommandController{
     }
     
     public function allCommands(Request $req, Response $resp, array $args): Response{
-        // * initiate variables for pagination
+        //initiate variables for pagination
         $size = 10;
         $page = 0;
+        $page_maximum = 0;
 
-        //Check if pagination required (get page number)
+        //check if pagination required (get page number)
         if (isset($req->getQueryParams()['page']) != null && is_numeric($req->getQueryParams()['page']) && $req->getQueryParams()['page'] > 0) {
             $page = intval($req->getQueryParams()['page']);
+        } else if($req->getQueryParams()['page'] < 0){
+
         }
 
-        //Check if pagination required (get size number)
+        //check if pagination required (get size number)
         if (isset($req->getQueryParams()['size']) && is_numeric($req->getQueryParams()['size']) && $req->getQueryParams()['size'] > 0) {
             $size = intval($req->getQueryParams()['size']);
         }
 
-        //initiate offset value
-        $offset = $size * $page;
-
         //1st part of the request
         $allCommands = Commande::select(['id', 'nom', 'created_at', 'livraison', 'status']);
-
-        //2nd part of the request with pagination
-        $allCommands = $allCommands->limit($size)->offset($offset);
 
         //check for status filter
         if (isset($req->getQueryParams()['s']) && is_numeric($req->getQueryParams()['s'])) {
             $allCommands = $allCommands->where('status', intval($req->getQueryParams()['s']));
         }
-        
-        $allCommands = $allCommands->get();
 
+        //count all commands before the limit
+        $recordCount = $allCommands->count();
+
+
+        //part max_page
+        $page_maximum = intval($recordCount / $size);
+
+        if($page > $page_maximum){
+            $page = $page_maximum;
+            var_dump('sup');
+        }
+
+        //initiate offset value
+        $offset = $size * $page;
+
+        //2nd part of the request with pagination
+        $allCommands = $allCommands->limit($size)->offset($offset)->get();
 
         // initaite array for datas + links
         $command_and_links = [];
 
-
+        //foreach lopp for each command
         foreach($allCommands as $commande){
             // get the uri path for each command
             $url_oneCommand = $this->container->router->pathFor('command', ['id'=>$commande['id']]);
             // add to another array the details of each command (data + links)
             $command_and_links[] = [
                 'command' => [
+                    'dzq' => $page,
+                    'dq' => $page_maximum,
                     'id' => $commande['id'],
                     'nom' => $commande['nom'],
                     'created_at' => $commande['created_at'],
@@ -81,7 +95,7 @@ class CommandController{
         //complete the data array with datas who are gonna be returned in JSON format
         $data = [
             "type" => "collection",
-            "count" => count($allCommands),
+            "count" => $recordCount,
             'size' => $size,
             "commandes" => $command_and_links,
         ];
