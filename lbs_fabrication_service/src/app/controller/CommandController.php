@@ -17,7 +17,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException as ModelNotFoundExceptio
 class CommandController{
 
     private $container; // le conteneur de dépendences de l'application
-    const ELEMENTS_PAGE = 10;
+    
 
     public function __construct(\Slim\Container $container)
     {
@@ -25,32 +25,47 @@ class CommandController{
     }
     
     public function allCommands(Request $req, Response $resp, array $args): Response{
-        //get attribute 'status' from middleware 'filterStatus()'
-        $param_status = $req->getAttribute('status');
+        // * initiate variables for pagination
+        $size = 10;
+        $page = 0;
 
-        //
-        $param_page = $req->getAttribute('page');
-
-        //get all the commands
-        $allCommandes = Commande::select(['id', 'nom', 'created_at', 'livraison', 'status']);
-        //check for status filter
-        if($param_status){
-            $allCommandes = $allCommandes->where('status', '=', $param_status);
+        //Check if pagination required (get page number)
+        if (isset($req->getQueryParams()['page']) != null && is_numeric($req->getQueryParams()['page']) && $req->getQueryParams()['page'] > 0) {
+            $page = intval($req->getQueryParams()['page']);
         }
-        $allCommandes = $allCommandes->get();
+
+        //Check if pagination required (get size number)
+        if (isset($req->getQueryParams()['size']) && is_numeric($req->getQueryParams()['size']) && $req->getQueryParams()['size'] > 0) {
+            $size = intval($req->getQueryParams()['size']);
+        }
+
+        //initiate offset value
+        $offset = $size * $page;
+
+        //1st part of the request
+        $allCommands = Commande::select(['id', 'nom', 'created_at', 'livraison', 'status']);
+
+        //2nd part of the request with pagination
+        $allCommands = $allCommands->limit($size)->offset($offset);
+
+        //check for status filter
+        if (isset($req->getQueryParams()['s']) && is_numeric($req->getQueryParams()['s'])) {
+            $allCommands = $allCommands->where('status', intval($req->getQueryParams()['s']));
+        }
+        
+        $allCommands = $allCommands->get();
 
 
         // initaite array for datas + links
         $command_and_links = [];
 
 
-        foreach($allCommandes as $commande){
+        foreach($allCommands as $commande){
             // get the uri path for each command
             $url_oneCommand = $this->container->router->pathFor('command', ['id'=>$commande['id']]);
             // add to another array the details of each command (data + links)
             $command_and_links[] = [
                 'command' => [
-                    'ds'=> $param_status,
                     'id' => $commande['id'],
                     'nom' => $commande['nom'],
                     'created_at' => $commande['created_at'],
@@ -66,7 +81,8 @@ class CommandController{
         //complete the data array with datas who are gonna be returned in JSON format
         $data = [
             "type" => "collection",
-            "count" => count($allCommandes),
+            "count" => count($allCommands),
+            'size' => $size,
             "commandes" => $command_and_links,
         ];
 

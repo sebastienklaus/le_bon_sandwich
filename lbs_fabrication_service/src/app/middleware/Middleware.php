@@ -62,35 +62,4 @@ class Middleware {
         return $resp;
     }
 
-    // * check du filter 'status' dans la partie query_param de l'uri
-    public static function filterStatus(Request $req, Response $resp, callable $next){
-
-        $queryParams = $req->getQueryParams();
-
-        if (isset($queryParams['s']) && !empty($queryParams['s']) && is_numeric($queryParams['s'])){
-            // $status = $req->getQueryParam('s' , null);
-            $req = $req->withAttribute( 'status' , $queryParams['s'] );
-        }
-
-
-        $resp = $next($req,$resp);
-
-        return $resp;
-
-    }
-
-    // * check du filter 'page' dans la partie query_param de l'uri
-    public static function filterPage(Request $req, Response $resp, callable $next){
-        $queryParams = $req->getQueryParams();
-
-        if (isset($queryParams['page']) && !empty($queryParams['page'])){
-            $req = $req->withAttribute( 'page' , $queryParams['page'] );
-        }
-
-
-        $resp = $next($req,$resp);
-
-        return $resp;
-    }
-
 }

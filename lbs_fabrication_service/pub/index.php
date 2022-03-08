@@ -28,8 +28,7 @@ $app->get('/commands/{id}[/]', CommandController::class . ':oneCommand')
     ->setName('command');
 
 $app->get('/commands[/]', CommandController::class . ':allCommands')
-    ->setName('allCommands')
-    ->add(Middleware::class . ':filterStatus');
+    ->setName('allCommands');
     
 //
     
