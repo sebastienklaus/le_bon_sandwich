@@ -28,7 +28,7 @@ class CommandController{
         //initiate variables for pagination
         $size = 10;
         $page = 0;
-        $page_maximum = 0;
+        $last_page = 0;
 
         //check if pagination required (get page number)
         if (isset($req->getQueryParams()['page']) != null && is_numeric($req->getQueryParams()['page']) && $req->getQueryParams()['page'] > 0) {
@@ -50,20 +50,20 @@ class CommandController{
             $allCommands = $allCommands->where('status', intval($req->getQueryParams()['s']));
         }
 
-        //count all commands before the limit
+        //count all commands (before limit())
         $recordCount = $allCommands->count();
 
 
-        //part max_page
-        $page_maximum = intval($recordCount / $size);
+        //initaite the maximum page
+        $last_page = intval($recordCount / $size);
 
-        if($page > $page_maximum){
-            $page = $page_maximum;
-            var_dump('sup');
+        //check if actual page is greater than value of page maximum
+        if($page > $last_page){
+            $page = $last_page;
         }
 
         //initiate offset value
-        $offset = $size * $page;
+        $offset = ($page - 1) * $size;
 
         //2nd part of the request with pagination
         $allCommands = $allCommands->limit($size)->offset($offset)->get();
@@ -78,8 +78,6 @@ class CommandController{
             // add to another array the details of each command (data + links)
             $command_and_links[] = [
                 'command' => [
-                    'dzq' => $page,
-                    'dq' => $page_maximum,
                     'id' => $commande['id'],
                     'nom' => $commande['nom'],
                     'created_at' => $commande['created_at'],
