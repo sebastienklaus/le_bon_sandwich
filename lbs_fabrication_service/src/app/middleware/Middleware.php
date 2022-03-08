@@ -44,6 +44,7 @@ class Middleware {
         return $resp;
     }
 
+    // * check d'un token pour afficher ou non une commande
     public static function checkToken(Request $req, Response $resp, callable $next){
         $queryParams = $req->getQueryParams();
         
@@ -59,6 +60,23 @@ class Middleware {
         $resp = $next($req,$resp);
 
         return $resp;
+    }
+
+    // * check du filter 'status' dans la partie query_param de l'uri
+    public static function filterStatus(Request $req, Response $resp, callable $next){
+
+        $queryParams = $req->getQueryParams();
+
+        if (isset($queryParams['s']) && !empty($queryParams['s'])){
+            // $status = $req->getQueryParam('s' , null);
+            $req = $req->withAttribute( 'status' , $queryParams['s'] );
+        }
+
+
+        $resp = $next($req,$resp);
+
+        return $resp;
+
     }
 
 }
