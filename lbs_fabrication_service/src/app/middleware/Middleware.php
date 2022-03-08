@@ -67,7 +67,7 @@ class Middleware {
 
         $queryParams = $req->getQueryParams();
 
-        if (isset($queryParams['s']) && !empty($queryParams['s'])){
+        if (isset($queryParams['s']) && !empty($queryParams['s']) && is_numeric($queryParams['s'])){
             // $status = $req->getQueryParam('s' , null);
             $req = $req->withAttribute( 'status' , $queryParams['s'] );
         }
@@ -77,6 +77,20 @@ class Middleware {
 
         return $resp;
 
+    }
+
+    // * check du filter 'page' dans la partie query_param de l'uri
+    public static function filterPage(Request $req, Response $resp, callable $next){
+        $queryParams = $req->getQueryParams();
+
+        if (isset($queryParams['page']) && !empty($queryParams['page'])){
+            $req = $req->withAttribute( 'page' , $queryParams['page'] );
+        }
+
+
+        $resp = $next($req,$resp);
+
+        return $resp;
     }
 
 }
