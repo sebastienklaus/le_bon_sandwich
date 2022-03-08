@@ -30,6 +30,6 @@ $app->get('/commands/{id}[/]', CommandController::class . ':oneCommand')
 $app->get('/commands[/]', CommandController::class . ':allCommands')
     ->setName('allCommands')
     ->add(Middleware::class . ':filterStatus');
-
+//
     
 $app->run();
