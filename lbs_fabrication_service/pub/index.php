@@ -23,7 +23,13 @@ $capsule->bootEloquent();
 $capsule->setAsGlobal();
 
 // Set the differents routes
+
+$app->get('/commands/{id}[/]', CommandController::class . ':oneCommand')
+    ->setName('command');
+
 $app->get('/commands[/]', CommandController::class . ':allCommands')
-    ->setName('allCommands');
+    ->setName('allCommands')
+    ->add(Middleware::class . ':filterStatus');
+
     
 $app->run();
