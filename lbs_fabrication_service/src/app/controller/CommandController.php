@@ -54,7 +54,7 @@ class CommandController{
         $recordCount = $allCommands->count();
 
 
-        //initaite the maximum page
+        //initiate the maximum page
         $last_page = intval($recordCount / $size);
 
         //check if actual page is greater than value of page maximum
