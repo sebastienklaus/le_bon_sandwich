@@ -28,7 +28,7 @@ class ComposerStaticInit460101da70fd201f34e9fbdfe9627776
         ),
         'l' => 
         array (
-            'lbs\\fab\\' => 8,
+            'lbs\\auth\\' => 9,
         ),
         'S' => 
         array (
@@ -82,7 +82,7 @@ class ComposerStaticInit460101da70fd201f34e9fbdfe9627776
         array (
             0 => __DIR__ . '/..' . '/voku/portable-ascii/src/voku',
         ),
-        'lbs\\fab\\' => 
+        'lbs\\auth\\' => 
         array (
             0 => __DIR__ . '/../..' . '/',
         ),

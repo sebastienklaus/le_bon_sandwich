@@ -1,6 +1,6 @@
 <?php
 
-use lbs\fab\app\error\ErrorHandler as ErrorHandler;
+use lbs\auth\app\error\ErrorHandler as ErrorHandler;
 
 return [
     

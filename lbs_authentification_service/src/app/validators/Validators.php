@@ -1,6 +1,6 @@
 <?php
 
-namespace lbs\command\app\validators;
+namespace lbs\auth\app\validators;
 
 use \Respect\Validation\Validator as v;
 

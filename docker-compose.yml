@@ -94,6 +94,30 @@ services:
 # AUTHENTIFICATION PART
 #
 
+
+#
+# service api.authentification : api backoffice pour l'authentification 
+# & validité du token JWT
+#
+  api.authentification:
+    image: 'canals/php:latest'
+    environment:
+      - VHOST_HOSTNAME=api.auth.local
+      - VHOST_DOCROOT=/var/www/public
+    ports:
+      - '19980:80'
+      - '19943:443'
+    volumes:
+      - './lbs_authentification_service/public:/var/www/public'
+      - './lbs_authentification_service/src:/var/www/src'
+    working_dir: /var/www/src
+    networks:
+      - lbs.net
+    depends_on:
+      - mysql.users
+
+
+
 # service sql pour le stockage des users -
   # utilisé par l'api  authentification
   mysql.users:
@@ -111,23 +135,4 @@ services:
     volumes:
       - './lbs_authentification_service/sql:/var/sql'
 
-#
-# service api.authentification : api backoffice pour l'authentification 
-# & validité du token JWT
-#
-  api.authentification:
-    image: 'canals/php:latest'
-    environment:
-      - VHOST_HOSTNAME=api.auth.local
-      - VHOST_DOCROOT=/var/www/public
-    ports:
-      - '19980:80'
-      - '19943:443'
-    volumes:
-      - './lbs_authentification_service/public:/var/www/pub'
-      - './lbs_authentification_service/src:/var/www/src'
-    working_dir: /var/www/src
-    networks:
-      - lbs.net
-    depends_on:
-      - mysql.commande
+

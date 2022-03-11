@@ -2,9 +2,9 @@
 
 require_once  __DIR__ . '/../src/vendor/autoload.php';
 
-use \lbs\fab\app\controller\CommandController as CommandController;
-use \lbs\fab\app\middleware\Middleware as Middleware;
-use lbs\fab\app\validators\Validators as validators;
+use \lbs\auth\app\controller\CommandController as CommandController;
+use \lbs\auth\app\middleware\Middleware as Middleware;
+use lbs\auth\app\validators\Validators as validators;
 use \DavidePastore\Slim\Validation\Validation as Validation ;
 
 $settings = require_once __DIR__. '/../src/app/conf/settings.php';
@@ -23,13 +23,8 @@ $capsule->bootEloquent();
 $capsule->setAsGlobal();
 
 // Set the differents routes
-
-$app->get('/commands/{id}[/]', CommandController::class . ':oneCommand')
-    ->setName('command');
-
-$app->get('/commands[/]', CommandController::class . ':allCommands')
-    ->setName('allCommands');
-    
-//
+ 
+$app->get('/hello[/]', CommandController::class . ':hello')
+    ->setName('hello');
     
 $app->run();

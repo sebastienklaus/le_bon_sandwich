@@ -1,11 +1,11 @@
 <?php
 
-namespace lbs\fab\app\middleware;
+namespace lbs\auth\app\middleware;
 
 use \Psr\Http\Message\ServerRequestInterface as Request;
 use \Psr\Http\Message\ResponseInterface as Response;
 
-use lbs\fab\app\error\JsonError as JsonError;
+use lbs\auth\app\error\JsonError as JsonError;
 use Illuminate\Database\Eloquent\ModelNotFoundException as ModelNotFoundException;
 
 use Ramsey\Uuid\Uuid;
