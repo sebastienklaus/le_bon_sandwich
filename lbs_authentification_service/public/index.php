@@ -2,6 +2,7 @@
 
 require_once  __DIR__ . '/../src/vendor/autoload.php';
 
+use \lbs\auth\app\controller\LBSAuthController as LBSAuthController;
 use \lbs\auth\app\controller\CommandController as CommandController;
 use \lbs\auth\app\middleware\Middleware as Middleware;
 use lbs\auth\app\validators\Validators as validators;
@@ -24,7 +25,10 @@ $capsule->setAsGlobal();
 
 // Set the differents routes
  
-$app->get('/hello[/]', CommandController::class . ':hello')
-    ->setName('hello');
+$app->get('/auth[/]', LBSAuthController::class . ':authenticate')
+    ->setName('authentification');
+
+$app->get('/check[/]', LBSAuthController::class . ':check')
+    ->setName('check');
     
 $app->run();
