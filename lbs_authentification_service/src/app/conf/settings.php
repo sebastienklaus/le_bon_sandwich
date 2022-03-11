@@ -4,6 +4,7 @@ return [
     'settings' => [
         'displayErrorDetails' => true,
         'dbfile' => parse_ini_file('commande.db.conf.ini.dist'),
+        'secret' => '1er7cfajoms82egsxqswexdcftvgb482515s',
 
         //DEBUG LOG
         'debug.name' => 'slim.log',
