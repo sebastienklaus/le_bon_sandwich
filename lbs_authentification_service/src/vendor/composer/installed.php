@@ -29,6 +29,15 @@
       ),
       'reference' => '8b7ff3e4b7de6b2c84da85637b59fd2880ecaa89',
     ),
+    'firebase/php-jwt' => 
+    array (
+      'pretty_version' => 'v6.0.0',
+      'version' => '6.0.0.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => '0541cba75ab108ef901985e68055a92646c73534',
+    ),
     'illuminate/collections' => 
     array (
       'pretty_version' => 'v8.83.3',

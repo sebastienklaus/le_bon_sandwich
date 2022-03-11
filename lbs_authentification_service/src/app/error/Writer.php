@@ -7,7 +7,7 @@ use \Psr\Http\Message\ResponseInterface as Response ;
 use Psr\Container\ContainerInterface;
 
 
-class JsonError extends \Exception{
+class Writer extends \Exception{
 
     public static function jsonError (Request $req, Response $resp, string $type, int $error, string $msg){
 
@@ -29,5 +29,18 @@ class JsonError extends \Exception{
         //return the response (ALWAYS !)
         return $resp;
 
+    }
+
+
+    // Code réponse HTTP + Header JSON (//? Rajouter data ?)
+    public static function json_output(Response $resp, int $code_resp, $data): Response
+    {
+    
+        $resp = $resp->withStatus($code_resp)
+                    ->withHeader('Content-Type', 'application/json; charset=utf-8');
+        
+        $resp->getBody()->write(json_encode($data));
+    
+        return $resp;
     }
 }
