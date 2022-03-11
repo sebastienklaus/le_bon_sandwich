@@ -15,10 +15,6 @@ use \Psr\Http\Message\ServerRequestInterface as Request;
 use \Psr\Http\Message\ResponseInterface as Response;
 
 
-/**
- * Class LBSAuthController
- * @package lbs\command\api\controller
- */
 class LBSAuthController
 {
 
@@ -29,6 +25,7 @@ class LBSAuthController
     {
         $this->container = $container;
     }
+
 
     public function authenticate(Request $req, Response $resp, $args): Response {
 
@@ -82,6 +79,42 @@ class LBSAuthController
         return Writer::json_output($resp, 200, $data);
 
 
+    }
+
+    public function check(Request $req, Response $resp, $args): Response {
+
+        try {
+            
+            $secret = $this->container->settings['secret'];
+
+            $h = $req->getHeader('Authorization')[0] ;
+            $tokenstring = sscanf($h, "Bearer %s")[0] ;
+            $token = JWT::decode($tokenstring, new Key($secret,'HS512' ) );
+
+            $data = [
+                'user-mail' => $token->upr->email,
+                'user-username' => $token->upr->username,
+                'user-level' => $token->upr->level,
+            ];
+
+            return Writer::json_output($resp, 200, $data);
+
+        } 
+        catch (ExpiredException $e) {
+            return Writer::jsonError($req, $resp, 'error', 401, 'The token is expired');
+
+        } catch (SignatureInvalidException $e) {
+            return Writer::jsonError($req, $resp, 'error', 401, 'The signature is not valid');
+
+        } catch (BeforeValidException $e) {
+            return Writer::jsonError($req, $resp, 'error', 401, 'BeforeValidException');
+
+        } catch (\UnexpectedValueException $e) { 
+            return Writer::jsonError($req, $resp, 'error', 401, 'The value of token is not the right one');
+
+        }    
+
+        return $resp;
     }
 
 }
