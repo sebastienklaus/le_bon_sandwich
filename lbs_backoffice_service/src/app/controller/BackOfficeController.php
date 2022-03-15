@@ -14,6 +14,7 @@ use lbs\backoffice\app\error\Writer as Writer;
 use \Psr\Http\Message\ServerRequestInterface as Request;
 use \Psr\Http\Message\ResponseInterface as Response;
 use GuzzleHttp\Client as Client;
+use lbs\backoffice\app\error\ErrorHandler;
 
 class BackOfficeController
 {
@@ -59,14 +60,13 @@ class BackOfficeController
         $param_user_level = $req->getAttribute('user_level');
         $param_token = $req->getAttribute('token');
 
-
-        if (isset($param_token) && $param_user_level >= 10) {
+        if (isset($param_token) && $param_user_level >= $this->container->settings['user_level']) {
             $response = $client->request('get', '/commands');
             return Writer::json_output($resp, 200, json_decode($response->getBody()));
         }
 
-        return Writer::jsonError($req, $resp,'error', 403, 'You are not authorized');
-        
+        // return Writer::jsonError($req, $resp,'error', 403, 'You are not authorized');
+        return ErrorHandler::notAllowedHandler();
         
 
     }
