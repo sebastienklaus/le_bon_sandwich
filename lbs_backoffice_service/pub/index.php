@@ -6,7 +6,7 @@ require_once  __DIR__ . '/../src/vendor/autoload.php';
 use \Psr\Http\Message\ServerRequestInterface as Request;
 use \Psr\Http\Message\ResponseInterface as Response;
 use \lbs\backoffice\app\controller\BackOfficeController as BackOfficeController;
-use GuzzleHttp\Client as Client;
+use \lbs\backoffice\app\middleware\Middleware as Middleware;
 
 $settings = require_once __DIR__. '/../src/app/conf/settings.php';
 $errors = require_once __DIR__. '/../src/app/conf/errors.php';
@@ -22,7 +22,8 @@ $app = new \Slim\App(new \Slim\Container($app_config));
 $app->post('/auth[/]', BackOfficeController::class . ':authenticate')
     ->setName('authentification');
 
-$app->get('/hello[/]', BackOfficeController::class . ':hello')
-    ->setName('commands');
+$app->get('/commands[/]', BackOfficeController::class . ':commands')
+    ->setName('commands')
+    ->add(Middleware::class . ':checkAuth');
     
 $app->run();

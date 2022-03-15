@@ -92,9 +92,9 @@ class LBSAuthController
             $token = JWT::decode($tokenstring, new Key($secret,'HS512' ) );
 
             $data = [
-                'user-mail' => $token->upr->email,
-                'user-username' => $token->upr->username,
-                'user-level' => $token->upr->level,
+                'user_mail' => $token->upr->email,
+                'user_username' => $token->upr->username,
+                'user_level' => $token->upr->level,
             ];
 
             return Writer::json_output($resp, 200, $data);
