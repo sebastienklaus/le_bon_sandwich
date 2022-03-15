@@ -25,7 +25,7 @@ $capsule->setAsGlobal();
 
 // Set the differents routes
  
-$app->get('/auth[/]', LBSAuthController::class . ':authenticate')
+$app->post('/auth[/]', LBSAuthController::class . ':authenticate')
     ->setName('authentification');
 
 $app->get('/check[/]', LBSAuthController::class . ':check')

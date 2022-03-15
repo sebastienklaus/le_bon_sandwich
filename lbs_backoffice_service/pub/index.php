@@ -3,23 +3,23 @@
 require_once  __DIR__ . '/../src/vendor/autoload.php';
 
 
+use \Psr\Http\Message\ServerRequestInterface as Request;
+use \Psr\Http\Message\ResponseInterface as Response;
 use GuzzleHttp\Client as Client;
 
-use \lbs\backoffice\app\controller\LBSAuthController as LBSAuthController;
-use \lbs\fab\app\controller\CommandController as CommandController;
-use \lbs\fab\app\middleware\Middleware as Middleware;
-use lbs\fab\app\validators\Validators as validators;
-use \DavidePastore\Slim\Validation\Validation as Validation ;
+// set new client(s)
 
-$client = new Client([
+$clientCommand = new Client([
     // Base URL : pour ensuite transmettre des requêtes relatives
     'base_uri' => 'http://api.commande.local',
     // options par défaut pour les requêtes
     'timeout' => 2.0,
     ]);
+$clientAuth = new Client([
+    // Base URL : pour ensuite transmettre des requêtes relatives
+    'base_uri' => 'http://api.auth.local',
+    // options par défaut pour les requêtes
+    'timeout' => 2.0,
+    ]);
 
 // Set the differents routes
-
-$response = $client->get('/commands');
-    
-echo $response->getBody();
