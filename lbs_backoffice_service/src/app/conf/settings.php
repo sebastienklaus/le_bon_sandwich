@@ -3,7 +3,6 @@
 return [
     'settings' => [
         'displayErrorDetails' => true,
-        'dbfile' => parse_ini_file('commande.db.conf.ini.dist'),
 
         //DEBUG LOG
         'debug.name' => 'slim.log',
@@ -14,5 +13,9 @@ return [
         'warning.name' => 'slim.log',
         'warning.log' => __DIR__ . '/../log/warning.log',
         'warning.level' => \Monolog\Logger::WARNING,
+
+        //client(s) Guzzle
+        'auth_service' => 'http://api.auth.local',
+        'command_service' => 'http://api.commande.local',
     ]
 ];
