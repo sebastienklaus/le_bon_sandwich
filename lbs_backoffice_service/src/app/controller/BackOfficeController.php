@@ -63,9 +63,11 @@ class BackOfficeController
             $query= $req->getQueryParams();
             $response = $client->request('GET', '/commands', ['query'=>$query ] );
             
+            $resp = $resp->withStatus($response->getStatusCode())
+                         ->withHeader('Content-Type', $response->getHeader('Content-Type'))
+                         ->withBody($response->getBody());
 
-        // return $resp;
-            return Writer::json_output($resp, 200, json_decode($response->getBody()));
+            return $resp;
         }
 
         // return Writer::jsonError($req, $resp,'error', 403, 'You are not authorized');
