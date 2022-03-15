@@ -16,7 +16,7 @@ return [
 
         //client(s) Guzzle
         'auth_service' => 'http://api.auth.local',
-        'command_service' => 'http://api.commande.local',
+        'fab_service' => 'http://api.fabrication.local',
         'user_level' => 10
     ]
 ];

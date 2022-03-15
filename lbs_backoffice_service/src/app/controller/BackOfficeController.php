@@ -52,16 +52,19 @@ class BackOfficeController
     public function commands(Request $req, Response $resp, $args): Response {
 
         $client = new Client([
-            'base_uri' => $this->container->get('settings')['command_service'],
+            'base_uri' => $this->container->get('settings')['fab_service'],
             'timeout' => 5.0
             ]);
-        
         
         $param_user_level = $req->getAttribute('user_level');
         $param_token = $req->getAttribute('token');
 
         if (isset($param_token) && $param_user_level >= $this->container->settings['user_level']) {
-            $response = $client->request('get', '/commands');
+            $query= $req->getQueryParams();
+            $response = $client->request('GET', '/commands', ['query'=>$query ] );
+            
+
+        // return $resp;
             return Writer::json_output($resp, 200, json_decode($response->getBody()));
         }
 
