@@ -37,7 +37,9 @@ services:
       - './lbs_commande_service/src:/var/www/src'
     working_dir: /var/www/src
     networks:
-      - lbs.net
+      lbs.net:
+        aliases:
+          - api.commande.local
     depends_on:
       - mysql.commande
 
@@ -58,7 +60,9 @@ services:
       - './lbs_fabrication_service/log:/var/log/app'
     working_dir: /var/www/src
     networks:
-      - lbs.net
+      lbs.net:
+        aliases:
+          - api.fabrication.local
     depends_on:
       - mysql.commande
 
@@ -112,7 +116,9 @@ services:
       - './lbs_authentification_service/src:/var/www/src'
     working_dir: /var/www/src
     networks:
-      - lbs.net
+      lbs.net:
+        aliases:
+          - api.auth.local
     depends_on:
       - mysql.users
 
@@ -154,7 +160,9 @@ services:
       - './lbs_backoffice_service/log:/var/log/app'
     working_dir: /var/www/src
     networks:
-      - lbs.net
+      lbs.net:
+        aliases:
+          - api.backoffice.local
     depends_on:
       - mysql.commande
       - mysql.users
