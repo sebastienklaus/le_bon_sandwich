@@ -5,21 +5,24 @@ require_once  __DIR__ . '/../src/vendor/autoload.php';
 
 use \Psr\Http\Message\ServerRequestInterface as Request;
 use \Psr\Http\Message\ResponseInterface as Response;
+use \lbs\backoffice\app\controller\BackOfficeController as BackOfficeController;
 use GuzzleHttp\Client as Client;
 
-// set new client(s)
+$settings = require_once __DIR__. '/../src/app/conf/settings.php';
+$errors = require_once __DIR__. '/../src/app/conf/errors.php';
+$dependencies= require_once __DIR__. '/../src/app/conf/dependencies.php';
 
-$clientCommand = new Client([
-    // Base URL : pour ensuite transmettre des requêtes relatives
-    'base_uri' => 'http://api.commande.local',
-    // options par défaut pour les requêtes
-    'timeout' => 2.0,
-    ]);
-$clientAuth = new Client([
-    // Base URL : pour ensuite transmettre des requêtes relatives
-    'base_uri' => 'http://api.auth.local',
-    // options par défaut pour les requêtes
-    'timeout' => 2.0,
-    ]);
+$app_config = array_merge($settings, $errors, $dependencies);
+
+
+$app = new \Slim\App(new \Slim\Container($app_config));
 
 // Set the differents routes
+ 
+$app->post('/auth[/]', BackOfficeController::class . ':authenticate')
+    ->setName('authentification');
+
+$app->get('/hello[/]', BackOfficeController::class . ':hello')
+    ->setName('commands');
+    
+$app->run();
