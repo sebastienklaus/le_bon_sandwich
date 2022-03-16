@@ -59,7 +59,7 @@ class LBSAuthController
 
         $secret = $this->container->settings['secret'];
         $token = JWT::encode(['iss' => 'http://api.auth.local/auth',
-            'aud' => 'http://api.fabrication.local',
+            'aud' => 'http://api.backoffice.local',
             'iat' => time(),
             'exp' => time() + (12 * 30 * 24 * 3600),
             'upr' => [
