@@ -3,6 +3,6 @@
 ./lbs_backoffice_service/src/vendor/
 ./lbs_commande_service/src/vendor/
 ./lbs_fabrication_service/src/vendor/
-
-./lbs_fidelisation_service/src/vendor/
 ./lbs_catalogue_service_sql/src/vendor/
+
+manip_td.odt
