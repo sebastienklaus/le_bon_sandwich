@@ -1,4 +1,4 @@
-.ini
+*.ini
 ./lbs_authentification_service/src/vendor/
 ./lbs_backoffice_service/src/vendor/
 ./lbs_commande_service/src/vendor/
