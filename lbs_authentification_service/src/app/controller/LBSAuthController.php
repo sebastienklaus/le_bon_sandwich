@@ -50,7 +50,7 @@ class LBSAuthController
 
         } catch (ModelNotFoundException $e) {
             $resp = $resp->withHeader('WWW-authenticate', 'Basic realm="lbs auth" ');
-            return Writer::jsonError($req, $resp, 'error', 401, 'Erreur authentification');
+            return Writer::jsonError($req, $resp, 'error', 401, 'Erreur authentification model');
         } catch (\Exception $e) {
             $resp = $resp->withHeader('WWW-authenticate', 'Basic realm="lbs auth" ');
             return Writer::jsonError($req, $resp, 'error', 401, 'Erreur authentification');
